@@ -7,13 +7,18 @@ const textSecondaryColor =
     Color.fromRGBO(100, 100, 100, 1.0); //Color.fromRGBO(200, 200, 200, 1.0);
 const errorColor = Colors.red;
 
-buildTextFormField(context, controller, icon, labelText) {
+buildTextFormField(context, controller, icon, labelText,{keyboardType}) {
   return TextFormField(
     controller: controller,
     decoration: InputDecoration(
         icon: icon,
         labelText: labelText,
         errorStyle: TextStyle(color: Theme.of(context).errorColor)),
+    keyboardType: keyboardType,
+    validator: (text) {
+      if (text == null || text.isEmpty) return 'Please input correctly';
+      return null;
+    },
   );
 }
 
@@ -22,5 +27,26 @@ buildTextButton(context, text, onPressed) {
     child: text,
     onPressed: onPressed,
     style: TextButton.styleFrom(primary: textPrimaryColor,backgroundColor: primaryColor),
+  );
+}
+buildPrimaryTextOnlyButton(context, text, onPressed) {
+  return TextButton(
+    child: text,
+    onPressed: onPressed,
+    style: TextButton.styleFrom(primary: textSecondaryColor,backgroundColor: Colors.transparent),
+  );
+}
+buildSecondaryTextOnlyButton(context, text, onPressed) {
+  return TextButton(
+    child: text,
+    onPressed: onPressed,
+    style: TextButton.styleFrom(primary: textPrimaryColor,backgroundColor: Colors.transparent),
+  );
+}
+buildSelectTextButton(context, text, onPressed) {
+  return TextButton(
+    child: text,
+    onPressed: onPressed,
+    style: TextButton.styleFrom(primary: textPrimaryColor,backgroundColor: Colors.transparent),
   );
 }
