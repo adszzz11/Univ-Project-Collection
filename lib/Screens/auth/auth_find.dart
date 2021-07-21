@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_new/constraints.dart';
 
@@ -25,9 +26,8 @@ class _AuthFindState extends State<AuthFind> {
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.end,
+          child: ListView(
+            physics: BouncingScrollPhysics(),
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 120),

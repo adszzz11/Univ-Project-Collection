@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new/Screens/auth/auth_find.dart';
+import 'package:flutter_new/Screens/auth/auth_register.dart';
 import 'package:flutter_new/constraints.dart';
 
 import '../../server.dart';
@@ -94,7 +95,10 @@ class _AuthLoginState extends State<AuthLogin> {
             ),
             Container(
               child: buildSecondaryTextOnlyButton(
-                  context, Text('Create yout New Account'), () {}),
+                  context, Text('Create yout New Account'), () {Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AuthRegister()));}),
             ),
           ]),
         ),
