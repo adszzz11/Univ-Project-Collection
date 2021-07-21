@@ -21,6 +21,7 @@ class _AuthLoginState extends State<AuthLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Form(
         key: _formKey,
         child: Padding(
@@ -87,25 +88,6 @@ class _AuthLoginState extends State<AuthLogin> {
                                 builder: (context) => AuthFind()));
                       }),
                     ),
-                    // Container(
-                    //   child: ReUsable.buildTextButton2("Sign In", () {
-                    //     if (_formKey.currentState.validate()) {
-                    //       print(_idController.text);
-                    //       print(_pwController.text);
-                    //       server.doPost(context, 'authenticate',
-                    //           username: _idController.text,
-                    //           password: _pwController.text);
-                    //     }
-                    //     // _authProvider.goToMain();
-                    //   }),
-                    //   width: MediaQuery.of(context).size.width,
-                    // ),
-                    // Container(
-                    //     child: ReUsable.buildTextButton4("Forget Id or Password?",
-                    //             () {
-                    //           _authProvider.updateStatePage('AuthFind');
-                    //         }),
-                    //     alignment: Align1ment.centerRight),
                   ],
                 ),
               ),
