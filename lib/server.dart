@@ -39,7 +39,7 @@ class Server {
 
       case 'signup':
         reqType = 'post';
-        addr = 'signup';
+        addr = 'auth/signup';
         data = {
           "userId": userId,
           "password": password,

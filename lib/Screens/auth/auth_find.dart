@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_new/constraints.dart';
 
@@ -114,6 +113,7 @@ class _AuthFindState extends State<AuthFind> {
                         _pwController,
                         Icon(Icons.vpn_key),
                         'PW',
+                        obscureText: true
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 16),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/server.dart';
 
@@ -23,8 +24,6 @@ class _AuthRegisterState extends State<AuthRegister> {
 
   var _dateTime=DateTime.now();
 
-  TextEditingController _DOBController = TextEditingController();
-
   TextEditingController _phoneController = TextEditingController();
 
   TextEditingController _addressController = TextEditingController();
@@ -40,7 +39,8 @@ class _AuthRegisterState extends State<AuthRegister> {
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
+          child: ListView(
+            physics: BouncingScrollPhysics(),
             children: [
               Padding(
                 padding: EdgeInsets.only(top: 32, bottom: 8),
@@ -97,12 +97,14 @@ class _AuthRegisterState extends State<AuthRegister> {
                         _pwController,
                         Icon(Icons.vpn_key),
                         'PW',
+                        obscureText: true,
                       ),
                       buildTextFormField(
                         context,
                         null,
                         Icon(Icons.vpn_key_outlined),
                         'PW Check',
+                        obscureText: true,
                       ),
                       buildTextFormField(
                         context,
@@ -116,34 +118,34 @@ class _AuthRegisterState extends State<AuthRegister> {
                         Icon(Icons.assignment_ind),
                         'Name',
                       ),
-                      SizedBox(
-                        height: 300,
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        height: 150,
                         child: CupertinoDatePicker(
+                          mode: CupertinoDatePickerMode.date,
                           initialDateTime: _dateTime,
                           onDateTimeChanged: (dateTime) {
                             setState(() {
                               _dateTime=dateTime;
+                              print(_dateTime.toString().substring(0,10));
                             });
                           },
                         ),
                       ),
                       buildTextFormField(
-                        context,
-                        _DOBController,
-                        Icon(Icons.calendar_today),
-                        'Birth',
-                      ),
-                      buildTextFormField(
-                        context,
-                        _phoneController,
-                        Icon(Icons.call),
-                        'Phone',
+                          context,
+                          _phoneController,
+                          Icon(Icons.call),
+                          'Phone',
+                          inputFormatters: [ FilteringTextInputFormatter.digitsOnly],
+                          keyboardType: TextInputType.number
                       ),
                       buildTextFormField(
                         context,
                         _addressController,
                         Icon(Icons.house),
                         'Address',
+                        keyboardType: TextInputType.streetAddress
                       ),
                       buildTextFormField(
                         context,
@@ -165,12 +167,13 @@ class _AuthRegisterState extends State<AuthRegister> {
                           Container(
                             child:
                                 buildTextButton(context, Text('Sign Up'), () {
+                                  print(_phoneController.text);
                               server.getReq("signup",
                                   userId: _idController.text.toString(),
                                   password: _pwController.text.toString(),
                                   nickname: _nickController.text.toString(),
                                   name: _nameController.text.toString(),
-                                  DOB: _DOBController.text.toString(),
+                                  DOB: _dateTime.toString().substring(0,10),
                                   phone: _phoneController.text.toString(),
                                   address: _addressController.text.toString(),
                                   detailAddress:

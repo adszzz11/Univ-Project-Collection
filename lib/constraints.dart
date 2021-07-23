@@ -7,9 +7,11 @@ const textSecondaryColor =
     Color.fromRGBO(100, 100, 100, 1.0); //Color.fromRGBO(200, 200, 200, 1.0);
 const errorColor = Colors.red;
 
-buildTextFormField(context, controller, icon, labelText,{keyboardType}) {
+buildTextFormField(context, controller, icon, labelText,{keyboardType,inputFormatters, obscureText=false}) {
   return TextFormField(
     controller: controller,
+    inputFormatters: inputFormatters,
+    obscureText: obscureText,
     decoration: InputDecoration(
         icon: icon,
         labelText: labelText,

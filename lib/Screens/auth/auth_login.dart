@@ -65,7 +65,7 @@ class _AuthLoginState extends State<AuthLogin> {
                     buildTextFormField(context, _idController,
                         Icon(Icons.account_circle), 'ID'),
                     buildTextFormField(
-                        context, _pwController, Icon(Icons.vpn_key), 'PW'),
+                        context, _pwController, Icon(Icons.vpn_key), 'PW', obscureText: true),
                     SizedBox(
                       height: 16.0,
                     ),
