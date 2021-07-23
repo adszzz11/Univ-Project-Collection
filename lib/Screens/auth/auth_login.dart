@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new/Screens/auth/auth_find.dart';
 import 'package:flutter_new/Screens/auth/auth_register.dart';
+import 'package:flutter_new/Screens/default/default_page.dart';
 import 'package:flutter_new/constraints.dart';
 
 import '../../server.dart';
@@ -76,6 +77,7 @@ class _AuthLoginState extends State<AuthLogin> {
                           server.getReq('authenticate',
                               username: _idController.text,
                               password: _pwController.text);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MainWidget()));
                       }),
                     ),
                     Container(

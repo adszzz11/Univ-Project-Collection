@@ -1,0 +1,72 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_new/constraints.dart';
+
+class MainWidget extends StatefulWidget {
+  @override
+  _MainWidgetState createState() => _MainWidgetState();
+}
+
+class _MainWidgetState extends State<MainWidget> {
+  static int pageNum=0;
+  PageController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    controller = PageController(initialPage: pageNum);
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: primaryColor,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: _navigationBody2(),
+      ),
+      bottomNavigationBar: _bottomNavigationBarWidget(),
+    );
+  }
+
+  Widget _navigationBody2() {
+    return PageView(
+      physics: BouncingScrollPhysics(),
+      onPageChanged:(index) {setState(() {
+        pageNum=index;
+      });},
+      scrollDirection: Axis.horizontal,
+      controller: controller,
+      children: [
+        // MainProfile(),
+        Container(child: Center(child: Text('1')),),
+        Container(child: Center(child: Text('2')),),
+        Container(child: Center(child: Text('3')),),
+        // MainDefault(),
+        // MainTest(),
+      ],
+    );
+  }
+
+  Widget _bottomNavigationBarWidget() {
+    return BottomNavigationBar(
+      items: [
+        BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            activeIcon: Icon(Icons.account_circle_outlined),
+            label: 'Profile'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.assignment),
+            activeIcon: Icon(Icons.assignment_outlined),
+            label: 'Home'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.wb_incandescent),
+            activeIcon: Icon(Icons.wb_incandescent_outlined),
+            label: 'Study'),
+      ],
+      currentIndex: pageNum,
+      selectedItemColor: primaryColor,
+      onTap: (index) {
+        setState(() {
+          pageNum=index;
+        });
+        controller.jumpToPage(index);
+      },
+    );
+  }
+}
