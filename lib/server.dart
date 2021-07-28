@@ -20,24 +20,23 @@ class Server {
         end,
         page,
         answerMainId}) async {
+
     String addr;
     Map<String, dynamic> data;
     List<Map<String, dynamic>> submitList = [];
     Map<String, dynamic> queryParameters;
     String reqType;
+    //선택지 구분
     switch (type) {
-      case 'getPinedBoard':
-        reqType = 'get';
-        addr = 'board/notice-pined';
-        break;
-
-      case 'authenticate':
+      //Auth
+      //TODO AuthFind 메소드 작성 필요, BackEnd 와 소통 요망
+      case 'authenticate': //로그인
         reqType = 'post';
         addr = 'authenticate';
         data = {"username": username, "password": password};
         break;
 
-      case 'signup':
+      case 'signup': //회원가입
         reqType = 'post';
         addr = 'auth/signup';
         data = {
@@ -53,7 +52,13 @@ class Server {
         };
         break;
 
-      // case 'submit':
+      case 'getPinedBoard':
+        reqType = 'get';
+        addr = 'board/notice-pined';
+        break;
+
+
+    // case 'submit':
       //   reqType = 'post';
       //   addr = 'problem/submit';
       //   var options =
@@ -95,6 +100,7 @@ class Server {
       //   queryParameters = {'id': answerMainId};
       //   break;
     }
+
     Response response =
     await _Req(reqType, addr, queryParameters: queryParameters, data: data);
     switch (type) {

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_new/Screens/default/default_profile.dart';
 import 'package:flutter_new/constraints.dart';
 
-class MainWidget extends StatefulWidget {
+class DefaultPage extends StatefulWidget {
   @override
-  _MainWidgetState createState() => _MainWidgetState();
+  _DefaultPageState createState() => _DefaultPageState();
 }
 
-class _MainWidgetState extends State<MainWidget> {
+class _DefaultPageState extends State<DefaultPage> {
   static int pageNum=0;
   PageController controller;
 
@@ -33,8 +34,7 @@ class _MainWidgetState extends State<MainWidget> {
       scrollDirection: Axis.horizontal,
       controller: controller,
       children: [
-        // MainProfile(),
-        Container(child: Center(child: Text('1')),),
+        DefaultProfile(),
         Container(child: Center(child: Text('2')),),
         Container(child: Center(child: Text('3')),),
         // MainDefault(),

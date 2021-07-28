@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new/Screens/auth/auth_login.dart';
-import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/themes.dart';
 
 void main() {

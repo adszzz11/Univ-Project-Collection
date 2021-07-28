@@ -77,7 +77,7 @@ class _AuthLoginState extends State<AuthLogin> {
                           server.getReq('authenticate',
                               username: _idController.text,
                               password: _pwController.text);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => MainWidget()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => DefaultPage()));
                       }),
                     ),
                     Container(
