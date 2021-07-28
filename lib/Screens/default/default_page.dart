@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_new/Screens/default/default_boards.dart';
 import 'package:flutter_new/Screens/default/default_problem.dart';
 import 'package:flutter_new/Screens/default/default_profile.dart';
 import 'package:flutter_new/constraints.dart';
@@ -36,8 +37,7 @@ class _DefaultPageState extends State<DefaultPage> {
       controller: controller,
       children: [
         DefaultProfile(),
-        Container(child: Center(child: Text('2')),),
-        // MainDefault(),
+        DefaultBoards(),
         DefaultProblem()
       ],
     );
