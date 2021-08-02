@@ -1,7 +1,7 @@
 import 'package:jwt_decode/jwt_decode.dart';
 
 class Secret {
-  static String _REV_AUTH = "http://34.64.73.179:8760/";
+  static String _REV_AUTH = "http://34.64.245.232:8760/";
   static String _TY_IP = "http://111.171.6.164:8760/";
   static String _HACKERS = "http://192.168.0.201:8760/";
 
