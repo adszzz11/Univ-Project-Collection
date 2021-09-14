@@ -64,9 +64,9 @@ class _AuthLoginState extends State<AuthLogin> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     buildTextFormField(context, _idController,
-                        Icon(Icons.account_circle), 'ID'),
+                        Icon(Icons.account_circle), 'ID', validator: primaryValidator),
                     buildTextFormField(
-                        context, _pwController, Icon(Icons.vpn_key), 'PW', obscureText: true),
+                        context, _pwController, Icon(Icons.vpn_key), 'PW', obscureText: true, validator: primaryValidator),
                     SizedBox(
                       height: 16.0,
                     ),
@@ -75,9 +75,9 @@ class _AuthLoginState extends State<AuthLogin> {
                       child: buildTextButton(context, Text('Sign in'), () {
                         if (_formKey.currentState.validate())
                           server.getReq('authenticate',
+                              context: context,
                               username: _idController.text,
                               password: _pwController.text);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => DefaultPage()));
                       }),
                     ),
                     Container(

@@ -6,8 +6,11 @@ const textPrimaryColor = Colors.white;
 const textSecondaryColor =
     Color.fromRGBO(100, 100, 100, 1.0); //Color.fromRGBO(200, 200, 200, 1.0);
 const errorColor = Colors.red;
-
-buildTextFormField(context, controller, icon, labelText,{keyboardType,inputFormatters, obscureText=false}) {
+var primaryValidator = (text) {
+if (text == null || text.isEmpty) return 'Please input correctly';
+return null;
+};
+buildTextFormField(context, controller, icon, labelText,{keyboardType,inputFormatters, obscureText=false, validator}) {
   return TextFormField(
     controller: controller,
     inputFormatters: inputFormatters,
@@ -17,10 +20,7 @@ buildTextFormField(context, controller, icon, labelText,{keyboardType,inputForma
         labelText: labelText,
         errorStyle: TextStyle(color: Theme.of(context).errorColor)),
     keyboardType: keyboardType,
-    validator: (text) {
-      if (text == null || text.isEmpty) return 'Please input correctly';
-      return null;
-    },
+    validator: validator
   );
 }
 
