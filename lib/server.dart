@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_new/Screens/auth/auth_changepw.dart';
+import 'package:flutter_new/Screens/default/boardpage/boards_detail.dart';
 import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/main.dart';
+import 'package:flutter_new/repo/boards.dart';
 import 'package:flutter_new/secret.dart';
 
 import 'Screens/default/default_page.dart';
@@ -23,7 +25,7 @@ class Server {
       start,
       end,
       page,
-      answerMainId}) async {
+      answerMainId, isPined, boardNum}) async {
     String addr;
     Map<String, dynamic> data;
     List<Map<String, dynamic>> submitList = [];
@@ -31,11 +33,12 @@ class Server {
     String reqType;
     //선택지 구분
     switch (type) {
-      //Auth
+      //Auth Part
+      //---------------------------------------------------------------------------------------------
       case 'authenticate': //로그인
         reqType = 'post';
         addr = 'authenticate';
-        data = {"username": username, "password": password};
+        data = {"userId": userId, "password": password};
         break;
 
       case 'signup': //회원가입
@@ -76,14 +79,35 @@ class Server {
       case 'changePW':
         reqType = 'patch';
         addr = 'auth/updatePw';
-        print(userId);
         data = {"userId": userId, "newPassword": password};
         break;
+    //---------------------------------------------------------------------------------------------
 
       case 'getPinedBoard':
         reqType = 'get';
         addr = 'board/notice-pined';
         break;
+
+      case 'getNextBoard':
+        reqType='get';
+        addr = 'board/notice?page=$page';
+        break;
+
+      case 'getBoardDetail':
+        reqType='get';
+        addr = 'board/notice-content';
+        queryParameters = {
+          'id': isPined
+              ? Boards.boardPined[boardNum]['noticeId']
+              : Boards.boardPage[boardNum]['noticeId']
+        };
+        break;
+
+      case 'getPinedBoardAndPage':
+        reqType='get';
+        addr = 'board/notice-first?page=0';
+        break;
+
 
       // case 'submit':
       //   reqType = 'post';
@@ -126,29 +150,50 @@ class Server {
       //   addr = 'problem/answer/detail';
       //   queryParameters = {'id': answerMainId};
       //   break;
+
+
+
     }
 
     Response response =
         await _Req(reqType, addr, queryParameters: queryParameters, data: data);
-    // print(response.data);
+    print(response.data);
     switch (type) {
       case 'authenticate':
         //TODO Success, Fail 판별해서 팝업 띄우기 추가
-        if (response.data == null) {}
-        else {
+      print(response.data);
+        if (response.data == 'Incorrect username or password') {
+        } else {
           Secret.setToken(response.data['jwt']);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => DefaultPage()));
+          Future.delayed(Duration(seconds: 2),() {
+            return getReq('getPinedBoardAndPage', context: context);
+          });
+
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => DefaultPage()));
         }
         break;
       case 'findID':
-        _buildFailArert(context, returnType: response.data);
+        _buildFailAlert(context,
+            widget: Text(
+              response.data.toString() == 'USER NOT FOUND'
+                  ? '유저를 찾지 못했습니다.'
+                  : '요청하신 아이디는 \n${response.data} \n입니다.',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ));
         break;
 
       case 'findPW':
-        if(response.data=='OK') { //비밀번호 바꾸기 허용
-          Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePassword(userId: userId,)));
-        } else { //반대
+        if (response.data == 'OK') {
+          //비밀번호 바꾸기 허용
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChangePassword(
+                        userId: userId,
+                      )));
+        } else {
+          //반대
 
         }
         break;
@@ -161,7 +206,40 @@ class Server {
 
       case 'changePW':
         print('성공');
-        //TODO AlertMessage
+        print(response.data);
+        _buildFailAlert(context,
+            widget: Text(
+              response.data.toString() == 'UPDATE SUCCESS'
+                  ? '비밀번호가 변경되었습니다. \n변경된 비밀번호로 로그인해주세요.'
+                  : '비밀번호 변경에 실패하였습니다.',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ));
+        break;
+
+      case 'getPinedBoard':
+        Boards.initBoardsPined(response.data);
+        break;
+      case 'getNextBoard':
+        return response.data['notices'];
+        break;
+      case 'getPinedBoardAndPage':
+        Boards.initBoardsPined(response.data['pined']);
+        Boards.initBoardsPage(response.data['page']['notices']);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => DefaultPage()));
+        break;
+
+      case 'getBoardDetail':
+        if (isPined)
+          Boards.boardPined[boardNum]
+              .putIfAbsent('detail', () => response.data);
+        else
+          Boards.boardPage[boardNum].putIfAbsent('detail', () => response.data);
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => NoticeDetail(boardNum, isPined)));
         break;
 
       // case 'submit':
@@ -210,7 +288,7 @@ class Server {
     return response;
   }
 
-  dynamic _buildFailArert(context, {returnType}) {
+  dynamic _buildFailAlert(context, {widget}) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -237,13 +315,7 @@ class Server {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      returnType.toString() == 'USER NOT FOUND'
-                          ? '유저를 찾지 못했습니다.'
-                          : '요청하신 아이디는 \n$returnType \n입니다.',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
+                    widget,
                   ],
                 ),
               ),
@@ -255,7 +327,9 @@ class Server {
             actions: [
               SizedBox(
                   width: 72,
-                  child: buildTextButton(context, Text('이전'), () {Navigator.of(context).pop();})),
+                  child: buildTextButton(context, Text('이전'), () {
+                    Navigator.of(context).pop();
+                  })),
             ],
           );
         });

@@ -76,7 +76,7 @@ class _AuthLoginState extends State<AuthLogin> {
                         if (_formKey.currentState.validate())
                           server.getReq('authenticate',
                               context: context,
-                              username: _idController.text,
+                              userId: _idController.text,
                               password: _pwController.text);
                       }),
                     ),

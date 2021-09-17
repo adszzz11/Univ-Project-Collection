@@ -6,7 +6,8 @@ class Boards {
   //TODO 객체 메소드 안에 넣을 수 있을거같은데?
   static void initBoardsPined(var value) {
     _boardPined = value;
-    // print(_boardSummary);
+    print(_boardPined);
+    print('initBoardsPined complete');
   }
   static dynamic _boardPage = [];
 
@@ -16,5 +17,6 @@ class Boards {
   static void initBoardsPage(var value) {
     _boardPage = value;
     print(_boardPage);
+    print('initBoardsPage complete');
   }
 }

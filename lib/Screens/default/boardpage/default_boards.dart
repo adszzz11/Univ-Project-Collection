@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_new/Screens/auth/auth_login.dart';
+import 'package:flutter_new/Screens/default/boardpage/boards_main.dart';
 import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/repo/boards.dart';
+
+import '../../../server.dart';
 
 class DefaultBoards extends StatefulWidget {
   @override
@@ -55,7 +59,7 @@ class _DefaultBoardsState extends State<DefaultBoards> {
   /// from - inclusive, to - exclusive
   Future<dynamic> req() async {
     return Future.delayed(Duration(seconds: 2), () {
-      // return server.getReq('getNextBoard', page: currentPage);
+      return server.getReq('getNextBoard', page: currentPage);
     });
   }
 
@@ -140,17 +144,13 @@ class _DefaultBoardsState extends State<DefaultBoards> {
                   ),
                 ],
               ),
-              TextButton(
-                child: Icon(
-                  Icons.arrow_forward_ios,
-                ),
-                onPressed: () {
-                  print(Boards.boardPined[index]['noticeId']);
-                  // server.getReqToQuery(context, 'getBoardDetail',
-                  //     boardNum: index, isPined: true);
-                },
-                // style: ColorRev.buttonStyle3,
-              ),
+              buildPrimaryTextOnlyButton(context, Icon(
+                Icons.arrow_forward_ios,
+              ), () {
+                print(Boards.boardPined[index]['noticeId']);
+                server.getReq('getBoardDetail',
+                    boardNum: index, isPined: true, context: context);
+              },)
             ],
           ),
           // Divider(
@@ -297,16 +297,16 @@ class _DefaultBoardsState extends State<DefaultBoards> {
                               fontWeight: FontWeight.bold),
                         ),
                       ),
-                      TextButton(
-                        child: Text('자세히 보기'),
-                        // style: ColorRev.buttonStyle3,
-                        onPressed: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => DefaultNotice()));
-                        },
-                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: buildPrimaryTextOnlyButton(
+                            context, Text('자세히 보기'), () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DefaultNotice()));
+                        }),
+                      )
                     ],
                   ),
                   Divider(
@@ -316,6 +316,7 @@ class _DefaultBoardsState extends State<DefaultBoards> {
                   Container(
                     height: MediaQuery.of(context).size.height * 0.331,
                     padding: EdgeInsets.only(bottom: 8),
+                    alignment: Alignment.topLeft,
                     child: ListView.separated(
                       itemCount: Boards.boardPined.length,
                       itemBuilder: (context, index) {

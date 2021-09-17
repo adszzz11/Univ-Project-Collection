@@ -96,7 +96,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                             child:
                                 buildTextButton(context, Text('Sign Up'), () {
                               if(_formKey.currentState.validate()) {
-                                server.getReq('changePW', userId: widget.userId, password: _pwController.text);
+                                server.getReq('changePW', userId: widget.userId, password: _pwController.text, context: context);
                               }
                             }),
                             width: MediaQuery.of(context).size.width * 0.3,
