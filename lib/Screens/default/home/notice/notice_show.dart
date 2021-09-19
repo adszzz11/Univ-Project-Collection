@@ -3,15 +3,15 @@ import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/repo/boards.dart';
 import 'package:provider/provider.dart';
 
-import '../../../server.dart';
-import 'boards_detail.dart';
+import '../../../../server.dart';
+import 'notice_detail.dart';
 
-class DefaultNotice extends StatefulWidget {
+class ShowNotice extends StatefulWidget {
   @override
-  _DefaultNoticeState createState() => _DefaultNoticeState();
+  _ShowNoticeState createState() => _ShowNoticeState();
 }
 
-class _DefaultNoticeState extends State<DefaultNotice> {
+class _ShowNoticeState extends State<ShowNotice> {
   ScrollController _scrollController = new ScrollController();
   bool isPerformingRequest = false;
   int currentPage = 0;

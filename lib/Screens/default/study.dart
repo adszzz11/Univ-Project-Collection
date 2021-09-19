@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_new/Screens/default/problem/select.dart';
 
 import '../../constraints.dart';
 
@@ -62,7 +63,7 @@ class DefaultProblem extends StatelessWidget {
                   style:
                       TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
               () {
-                // Navigator.push(context, MaterialPageRoute(builder: (context) =>));
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>SelectQuestion()));
               },
             ),
           ),

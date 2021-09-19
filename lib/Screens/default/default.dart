@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_new/Screens/default/boardpage/default_boards.dart';
-import 'package:flutter_new/Screens/default/default_problem.dart';
-import 'package:flutter_new/Screens/default/default_profile.dart';
+import 'package:flutter_new/Screens/default/study.dart';
+import 'package:flutter_new/Screens/default/profile.dart';
 import 'package:flutter_new/constraints.dart';
+
+import 'home/home_widget.dart';
 
 class DefaultPage extends StatefulWidget {
   @override
@@ -37,7 +38,7 @@ class _DefaultPageState extends State<DefaultPage> {
       controller: controller,
       children: [
         DefaultProfile(),
-        DefaultBoards(),
+        Home(),
         DefaultProblem()
       ],
     );

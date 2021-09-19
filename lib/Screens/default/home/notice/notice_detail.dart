@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_new/Screens/default/boardpage/boards_main.dart';
-import 'package:flutter_new/constraints.dart';
+import 'package:flutter_new/constraints.dart' as notice_detail;
 import 'package:flutter_new/repo/boards.dart';
 import 'package:provider/provider.dart';
 
-import '../../../server.dart';
+import '../../../../server.dart';
 
 // class NoticeDetail extends StatefulWidget {
 //
@@ -15,12 +14,11 @@ import '../../../server.dart';
 class NoticeDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return Consumer<BoardProvider>(
-      builder: (context,provider, child) {
+      builder: (context, provider, child) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
-          backgroundColor: primaryColor,
+          backgroundColor: notice_detail.primaryColor,
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
@@ -34,8 +32,10 @@ class NoticeDetail extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.7,
                       child: Text(
                         provider.isPined
-                            ? Boards.boardPined[provider.boardNum]['title'].toString()
-                            : Boards.boardPage[provider.boardNum]['title'].toString(),
+                            ? Boards.boardPined[provider.boardNum]['title']
+                                .toString()
+                            : Boards.boardPage[provider.boardNum]['title']
+                                .toString(),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 3,
                         style: TextStyle(
@@ -47,9 +47,9 @@ class NoticeDetail extends StatelessWidget {
                     Text(
                       provider.isPined
                           ? Boards.boardPined[provider.boardNum]['nickname']
-                          .toString()
+                              .toString()
                           : Boards.boardPage[provider.boardNum]['nickname']
-                          .toString(),
+                              .toString(),
                       style: TextStyle(
                           fontSize: 12,
                           color: Colors.white,
@@ -63,9 +63,9 @@ class NoticeDetail extends StatelessWidget {
                     Text(
                       provider.isPined
                           ? Boards.boardPined[provider.boardNum]['postDate']
-                          .toString()
+                              .toString()
                           : Boards.boardPage[provider.boardNum]['postDate']
-                          .toString(),
+                              .toString(),
                       style: TextStyle(
                           fontSize: 12,
                           color: Colors.white,
@@ -73,8 +73,10 @@ class NoticeDetail extends StatelessWidget {
                     ),
                     Text(
                       provider.isPined
-                          ? Boards.boardPined[provider.boardNum]['hits'].toString()
-                          : Boards.boardPage[provider.boardNum]['hits'].toString(),
+                          ? Boards.boardPined[provider.boardNum]['hits']
+                              .toString()
+                          : Boards.boardPage[provider.boardNum]['hits']
+                              .toString(),
                       style: TextStyle(
                           fontSize: 12,
                           color: Colors.white,
@@ -96,9 +98,9 @@ class NoticeDetail extends StatelessWidget {
                           child: Text(
                             provider.isPined
                                 ? Boards.boardPined[provider.boardNum]['detail']
-                                .toString()
+                                    .toString()
                                 : Boards.boardPage[provider.boardNum]['detail']
-                                .toString(),
+                                    .toString(),
                           ),
                         ),
                       ],
@@ -109,45 +111,41 @@ class NoticeDetail extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      buildSecondaryTextOnlyButton(
+                      notice_detail.buildSecondaryTextOnlyButton(
                         context,
                         Text('이전'),
-                            () {
+                        () {
                           if (provider.boardNum - 1 >= 0) {
                             server.getReq('getBoardDetail',
-                                  boardNum: provider.boardNum - 1,
-                                  isPined: provider.isPined,
-                                  context: context);
+                                boardNum: provider.boardNum - 1,
+                                isPined: provider.isPined,
+                                context: context);
 
                             Future.delayed(Duration(seconds: 1), () {
                               return provider.previousPage();
                             });
-
                           }
                         },
                       ),
-                      buildSecondaryTextOnlyButton(
+                      notice_detail.buildSecondaryTextOnlyButton(
                         context,
                         Text('목록'),
-                            () {
-
+                        () {
                           Navigator.pop(context);
-
                         },
                       ),
-                      buildSecondaryTextOnlyButton(
+                      notice_detail.buildSecondaryTextOnlyButton(
                         context,
                         Text('다음'),
-                            () {
+                        () {
                           if (provider.boardNum + 1 < provider.maxPage) {
                             server.getReq('getBoardDetail',
-                                  boardNum: provider.boardNum + 1,
-                                  isPined: provider.isPined,
-                                  context: context);
-                            Future.delayed(Duration(seconds: 1),() {
+                                boardNum: provider.boardNum + 1,
+                                isPined: provider.isPined,
+                                context: context);
+                            Future.delayed(Duration(seconds: 1), () {
                               return provider.nextPage();
                             });
-
                           }
                         },
                       ),

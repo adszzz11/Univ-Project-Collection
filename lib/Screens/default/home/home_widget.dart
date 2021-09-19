@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_new/Screens/auth/auth_login.dart';
-import 'package:flutter_new/Screens/default/boardpage/boards_main.dart';
+import 'package:flutter_new/Screens/default/home/notice/notice_show.dart';
 import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/repo/boards.dart';
 import 'package:provider/provider.dart';
 
 import '../../../server.dart';
-import 'boards_detail.dart';
+import 'notice/notice_detail.dart';
 
-class DefaultBoards extends StatefulWidget {
+class Home extends StatefulWidget {
   @override
-  _DefaultBoardsState createState() => _DefaultBoardsState();
+  _HomeState createState() => _HomeState();
 }
 
-class _DefaultBoardsState extends State<DefaultBoards> {
+class _HomeState extends State<Home> {
   ScrollController _scrollController = new ScrollController();
   bool isPerformingRequest = false;
   int currentPage = 0;
@@ -318,7 +317,7 @@ class _DefaultBoardsState extends State<DefaultBoards> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => DefaultNotice()));
+                                  builder: (context) => ShowNotice()));
                         }),
                       )
                     ],

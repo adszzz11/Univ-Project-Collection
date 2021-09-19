@@ -1,14 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_new/Screens/auth/auth_changepw.dart';
-import 'package:flutter_new/Screens/default/boardpage/boards_detail.dart';
 import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/main.dart';
 import 'package:flutter_new/repo/boards.dart';
 import 'package:flutter_new/secret.dart';
 import 'package:provider/provider.dart';
 
-import 'Screens/default/default_page.dart';
+import 'Screens/default/default.dart';
 
 class Server {
   dynamic getReq(String type,
@@ -26,16 +25,23 @@ class Server {
       start,
       end,
       page,
-      answerMainId, isPined, boardNum}) async {
-    String addr;
+      answerMainId,
+      isPined,
+      boardNum}) async {
+
+
+    String addr, reqType;
     Map<String, dynamic> data;
     List<Map<String, dynamic>> submitList = [];
     Map<String, dynamic> queryParameters;
-    String reqType;
+
+
     //선택지 구분
     switch (type) {
-      //Auth Part
-      //---------------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------------
+//    Auth Part
+//---------------------------------------------------------------------------------------------
       case 'authenticate': //로그인
         reqType = 'post';
         addr = 'authenticate';
@@ -82,20 +88,21 @@ class Server {
         addr = 'auth/updatePw';
         data = {"userId": userId, "newPassword": password};
         break;
-    //---------------------------------------------------------------------------------------------
-
+//---------------------------------------------------------------------------------------------
+//    Board Part
+//---------------------------------------------------------------------------------------------
       case 'getPinedBoard':
         reqType = 'get';
         addr = 'board/notice-pined';
         break;
 
       case 'getNextBoard':
-        reqType='get';
+        reqType = 'get';
         addr = 'board/notice?page=$page';
         break;
 
       case 'getBoardDetail':
-        reqType='get';
+        reqType = 'get';
         addr = 'board/notice-content';
         queryParameters = {
           'id': isPined
@@ -105,10 +112,13 @@ class Server {
         break;
 
       case 'getPinedBoardAndPage':
-        reqType='get';
+        reqType = 'get';
         addr = 'board/notice-first?page=0';
         break;
 
+//---------------------------------------------------------------------------------------------
+//    Problem Part
+//---------------------------------------------------------------------------------------------
 
       // case 'submit':
       //   reqType = 'post';
@@ -152,28 +162,28 @@ class Server {
       //   queryParameters = {'id': answerMainId};
       //   break;
 
-
-
     }
 
     Response response =
         await _Req(reqType, addr, queryParameters: queryParameters, data: data);
     print(response.data);
+
+
+
     switch (type) {
+
+//---------------------------------------------------------------------------------------------
+//    Auth Part
+//---------------------------------------------------------------------------------------------
       case 'authenticate':
-        //TODO Success, Fail 판별해서 팝업 띄우기 추가
-      print(response.data);
         if (response.data == 'Incorrect username or password') {
+          //TODO : 틀렸다는 표시 하기
         } else {
           Secret.setToken(response.data['jwt']);
-          Future.delayed(Duration(seconds: 2),() {
-            return getReq('getPinedBoardAndPage', context: context);
-          });
-
-          // Navigator.push(
-          //     context, MaterialPageRoute(builder: (context) => DefaultPage()));
+          getReq('getPinedBoardAndPage', context: context);
         }
         break;
+
       case 'findID':
         _buildFailAlert(context,
             widget: Text(
@@ -194,8 +204,7 @@ class Server {
                         userId: userId,
                       )));
         } else {
-          //반대
-
+          //TODO : Fail 띄우기
         }
         break;
 
@@ -217,6 +226,10 @@ class Server {
             ));
         break;
 
+//---------------------------------------------------------------------------------------------
+//    Board Part
+//---------------------------------------------------------------------------------------------
+
       case 'getPinedBoard':
         Boards.initBoardsPined(response.data);
         break;
@@ -236,13 +249,11 @@ class Server {
               .putIfAbsent('detail', () => response.data);
         else
           Boards.boardPage[boardNum].putIfAbsent('detail', () => response.data);
-        // Provider.of<BoardProvider>(context).updatePage(boardNum, isPined);
-        // BoardProvider().updatePage(boardNum, isPined);
-        // Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //         builder: (context) => NoticeDetail()));
         break;
+
+//---------------------------------------------------------------------------------------------
+//    Problem Part
+//---------------------------------------------------------------------------------------------
 
       // case 'submit':
       //   Questions.initQuestionResult(response.data);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new/Screens/auth/auth_find.dart';
 import 'package:flutter_new/Screens/auth/auth_register.dart';
-import 'package:flutter_new/Screens/default/default_page.dart';
+import 'package:flutter_new/Screens/default/default.dart';
 import 'package:flutter_new/constraints.dart';
 
 import '../../server.dart';
