@@ -6,6 +6,7 @@ import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/main.dart';
 import 'package:flutter_new/repo/boards.dart';
 import 'package:flutter_new/secret.dart';
+import 'package:provider/provider.dart';
 
 import 'Screens/default/default_page.dart';
 
@@ -235,11 +236,12 @@ class Server {
               .putIfAbsent('detail', () => response.data);
         else
           Boards.boardPage[boardNum].putIfAbsent('detail', () => response.data);
-
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => NoticeDetail(boardNum, isPined)));
+        // Provider.of<BoardProvider>(context).updatePage(boardNum, isPined);
+        // BoardProvider().updatePage(boardNum, isPined);
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => NoticeDetail()));
         break;
 
       // case 'submit':

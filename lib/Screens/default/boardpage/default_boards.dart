@@ -3,8 +3,10 @@ import 'package:flutter_new/Screens/auth/auth_login.dart';
 import 'package:flutter_new/Screens/default/boardpage/boards_main.dart';
 import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/repo/boards.dart';
+import 'package:provider/provider.dart';
 
 import '../../../server.dart';
+import 'boards_detail.dart';
 
 class DefaultBoards extends StatefulWidget {
   @override
@@ -85,81 +87,93 @@ class _DefaultBoardsState extends State<DefaultBoards> {
   }
 
   Widget _buildPinedBoard(int index) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return Consumer<BoardProvider>(
+      builder: (context, provider, child) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  Column(
                     children: [
-                      SizedBox(
-                        width: 200,
-                        child: Text(
-                          Boards.boardPined[index]['title'].toString(),
-                          // maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SizedBox(
+                            width: 200,
+                            child: Text(
+                              Boards.boardPined[index]['title'].toString(),
+                              // maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
+                          SizedBox(
+                            width: 28,
+                          ),
+                          Text(
+                            '${Boards.boardPined[index]['hits'].toString()} hits',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                        width: 28,
-                      ),
-                      Text(
-                        '${Boards.boardPined[index]['hits'].toString()} hits',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            Boards.boardPined[index]['postDate'].toString(),
+                            style: TextStyle(
+                              fontSize: 10,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 55,
+                          ),
+                          Text(
+                            Boards.boardPined[index]['nickname'],
+                            style: TextStyle(
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        Boards.boardPined[index]['postDate'].toString(),
-                        style: TextStyle(
-                          fontSize: 10,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 55,
-                      ),
-                      Text(
-                        Boards.boardPined[index]['nickname'],
-                        style: TextStyle(
-                          fontSize: 10,
-                        ),
-                      ),
-                    ],
-                  ),
+                  buildPrimaryTextOnlyButton(
+                    context,
+                    Icon(
+                      Icons.arrow_forward_ios,
+                    ),
+                    () {
+                      print(Boards.boardPined[index]['noticeId']);
+                      provider.updatePage(index, true);
+                      server.getReq('getBoardDetail',
+                          boardNum: index, isPined: true, context: context);
+
+                      Future.delayed(Duration(seconds: 1), () {
+                        return Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NoticeDetail()));
+                      });
+                    },
+                  )
                 ],
               ),
-              buildPrimaryTextOnlyButton(context, Icon(
-                Icons.arrow_forward_ios,
-              ), () {
-                print(Boards.boardPined[index]['noticeId']);
-                server.getReq('getBoardDetail',
-                    boardNum: index, isPined: true, context: context);
-              },)
+              
             ],
           ),
-          // Divider(
-          //   height: 8,
-          //   thickness: 1,
-          //   color: Colors.grey,
-          // ),
-        ],
-      ),
+        );
+      },
     );
   }
 
