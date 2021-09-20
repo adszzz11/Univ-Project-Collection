@@ -4,12 +4,17 @@ import 'package:flutter_new/Screens/auth/auth_changepw.dart';
 import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/main.dart';
 import 'package:flutter_new/repo/boards.dart';
+import 'package:flutter_new/repo/problems.dart';
 import 'package:flutter_new/secret.dart';
 import 'package:provider/provider.dart';
 
 import 'Screens/default/default.dart';
+import 'Screens/default/study/study_problem.dart';
 
 class Server {
+  Dio dio;
+  BaseOptions options;
+
   dynamic getReq(String type,
       {username,
       password,
@@ -28,27 +33,23 @@ class Server {
       answerMainId,
       isPined,
       boardNum}) async {
-
-
     String addr, reqType;
     Map<String, dynamic> data;
     List<Map<String, dynamic>> submitList = [];
     Map<String, dynamic> queryParameters;
 
-
     //선택지 구분
     switch (type) {
-
 //---------------------------------------------------------------------------------------------
 //    Auth Part
 //---------------------------------------------------------------------------------------------
-      case 'authenticate': //로그인
+      case 'authenticate':          //로그인
         reqType = 'post';
         addr = 'authenticate';
         data = {"userId": userId, "password": password};
         break;
 
-      case 'signup': //회원가입
+      case 'signup':               //회원가입
         reqType = 'post';
         addr = 'auth/signup';
         data = {
@@ -64,7 +65,7 @@ class Server {
         };
         break;
 
-      case 'findID':
+      case 'findID':                //아이디 찾기
         reqType = 'post';
         addr = 'auth/findId';
         data = {
@@ -73,7 +74,7 @@ class Server {
         };
         break;
 
-      case 'findPW':
+      case 'findPW':                //비밀번호 찾기
         reqType = 'post';
         addr = 'auth/findPw';
         data = {
@@ -83,7 +84,7 @@ class Server {
         };
         break;
 
-      case 'changePW':
+      case 'changePW':              //비밀번호 바꾸기
         reqType = 'patch';
         addr = 'auth/updatePw';
         data = {"userId": userId, "newPassword": password};
@@ -93,17 +94,17 @@ class Server {
 //    Board Part
 //---------------------------------------------------------------------------------------------
 
-      case 'getPinedBoard':
+      case 'getPinedBoard':         //고정 공지사항 가져오기
         reqType = 'get';
         addr = 'board/notice-pined';
         break;
 
-      case 'getNextBoard':
+      case 'getNextBoard':          //다음 공지사항 페이지 가져오기
         reqType = 'get';
         addr = 'board/notice?page=$page';
         break;
 
-      case 'getBoardDetail':
+      case 'getBoardDetail':        //공지사항 세부사항 가져오기
         reqType = 'get';
         addr = 'board/notice-content';
         queryParameters = {
@@ -113,7 +114,7 @@ class Server {
         };
         break;
 
-      case 'getPinedBoardAndPage':
+      case 'getPinedBoardAndPage':  //첫번쨰 공지사항 받아오기
         reqType = 'get';
         addr = 'board/notice-first?page=0';
         break;
@@ -122,32 +123,34 @@ class Server {
 //    Problem Part
 //---------------------------------------------------------------------------------------------
 
-      // case 'submit':
-      //   reqType = 'post';
-      //   addr = 'study/submit';
-      //   var options =
-      //   BaseOptions(headers: {'Authorization': 'Bearer ${Secret.token}'});
-      //   submitList.clear();
-      //
-      //   for (int i = 0; i < Questions.submitList.length; i++) {
-      //     submitList.add({
-      //       'questionId': Questions.questionNumList[i],
-      //       'multipleChoiceIds': Questions.submitList[i]
-      //     });
-      //   }
-      //   data = {
-      //     'userId': Secret.getSub,
-      //     'submitList': submitList,
-      //   };
-      //   break;
-      // case 'getQuestionByRange':
-      //   reqType = 'get';
-      //   addr = 'study/rangeQuestions';
-      //   queryParameters = {
-      //     'start': start,
-      //     'end': end,
-      //   };
-      //   break;
+      case 'getQuestionByRange':    //범위에 따른 문제 받아오기, TODO : 뺄 예정
+        reqType = 'get';
+        addr = 'problem/rangeQuestions';
+        queryParameters = {
+          'start': start,
+          'end': end,
+        };
+        break;
+
+      case 'submit':
+        reqType = 'post';
+        addr = 'problem/submit';
+        // var options =
+        // BaseOptions(headers: {'Authorization': 'Bearer ${Secret.token}'});
+        submitList.clear();
+
+        for (int i = 0; i < Questions.submitList.length; i++) {
+          submitList.add({
+            'questionId': Questions.questionNumList[i],
+            'multipleChoiceIds': Questions.submitList[i]
+          });
+        }
+        data = {
+          'userId': Secret.getSub,
+          'submitList': submitList,
+        };
+        break;
+
       // case 'getResults':
       //   reqType = 'get';
       //   addr = 'study/answer/summary';
@@ -166,26 +169,26 @@ class Server {
 
     }
 
-    Response response =
-        await _Req(reqType, addr, queryParameters: queryParameters, data: data);
+    Response response = await _Req(reqType, addr,
+        queryParameters: queryParameters, data: data, options: options);
     print(response.data);
 
-    
     switch (type) {
-
 //---------------------------------------------------------------------------------------------
 //    Auth Part
 //---------------------------------------------------------------------------------------------
-      case 'authenticate':
+      case 'authenticate':          //로그인
         if (response.data == 'Incorrect username or password') {
           //TODO : 틀렸다는 표시 하기
         } else {
           Secret.setToken(response.data['jwt']);
+          options =
+              BaseOptions(headers: {'Authorization': 'Bearer ${Secret.token}'});
           getReq('getPinedBoardAndPage', context: context);
         }
         break;
 
-      case 'findID':
+      case 'findID':                //아이디 찾기
         _buildFailAlert(context,
             widget: Text(
               response.data.toString() == 'USER NOT FOUND'
@@ -195,7 +198,7 @@ class Server {
             ));
         break;
 
-      case 'findPW':
+      case 'findPW':                //비밀번호 찾기
         if (response.data == 'OK') {
           //비밀번호 바꾸기 허용
           Navigator.push(
@@ -209,13 +212,13 @@ class Server {
         }
         break;
 
-      case 'signup':
+      case 'signup':               //회원가입
         // Navigator.push(
         //     context, MaterialPageRoute(builder: (context) => AuthLogin()));
         //TODO Success, Fail 판별해서 팝업 띄우기 추가
         break;
 
-      case 'changePW':
+      case 'changePW':              //비밀번호 바꾸기
         print('성공');
         print(response.data);
         _buildFailAlert(context,
@@ -231,20 +234,20 @@ class Server {
 //    Board Part
 //---------------------------------------------------------------------------------------------
 
-      case 'getPinedBoard':
+      case 'getPinedBoard':         //고정 공지사항 가져오기
         Boards.initBoardsPined(response.data);
         break;
-      case 'getNextBoard':
+      case 'getNextBoard':          //다음 공지사항 페이지 가져오기
         return response.data['notices'];
         break;
-      case 'getPinedBoardAndPage':
+      case 'getPinedBoardAndPage':  //첫번쨰 공지사항 받아오기
         Boards.initBoardsPined(response.data['pined']);
         Boards.initBoardsPage(response.data['page']['notices']);
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => DefaultPage()));
         break;
 
-      case 'getBoardDetail':
+      case 'getBoardDetail':        //공지사항 세부사항 가져오기
         if (isPined)
           Boards.boardPined[boardNum]
               .putIfAbsent('detail', () => response.data);
@@ -256,15 +259,18 @@ class Server {
 //    Problem Part
 //---------------------------------------------------------------------------------------------
 
-      // case 'submit':
-      //   Questions.initQuestionResult(response.data);
-      //   return _buildAlert(context);
-      //   break;
-      // case 'getQuestionByRange':
-      //   print(response.data.toString());
-      //   Questions.init(response.data);
-      //   Navigator.push(
-      //       context, MaterialPageRoute(builder: (context) => TestQuestion()));
+      case 'getQuestionByRange':
+        print(response.data.toString());
+        Questions.init(response.data);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => TestQuestion()));
+        break;
+
+      case 'submit':
+        Questions.initQResult(response.data);
+        return _buildAlert(context);
+        break;
+
       //   break;
       // case 'getResults':
       //   Results.initResultSummary(response.data);
@@ -285,7 +291,7 @@ class Server {
 
   Future<Response> _Req(String type, String addr,
       {queryParameters, data, options}) async {
-    Dio dio = Dio(options);
+    dio = Dio(options);
     Response response;
     switch (type) {
       case 'post':
@@ -348,78 +354,66 @@ class Server {
           );
         });
   }
-// dynamic _buildAlert(context) {
-//   return showDialog<void>(
-//       context: context,
-//       // barrierDismissible: false,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           shape:
-//           RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-//           title: Center(
-//               child: Text(
-//                 '시험 결과',
-//                 style: TextStyle(
-//                   color: textPrimaryColor,
-//                   fontSize: 24,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               )),
-//           contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 0),
-//           content: Container(
-//             height: 100,
-//             child: Card(
-//               shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(32)),
-//               elevation: 0,
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 crossAxisAlignment: CrossAxisAlignment.center,
-//                 children: [
-//                   Text(
-//                     '${Questions.questionResult['totalCount']}개의 문제 중',
-//                     style:
-//                     TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-//                   ),
-//                   Text(
-//                     '${Questions.questionResult['correctCount']}개를 맞췄습니다 !',
-//                     style:
-//                     TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//           elevation: 7,
-//           backgroundColor: primaryColor,
-//           actionsPadding: EdgeInsets.symmetric(horizontal: 64),
-//           actionsOverflowButtonSpacing: 100,
-//           actions: [
-//             SizedBox(
-//               width: 72,
-//               child: ReUsable.buildTextButton(
-//                 '상세보기',
-//                 Colors.transparent,
-//                 ColorRev.white,
-//                 onPressed: () {},
-//               ),
-//             ),
-//             SizedBox(
-//               width: 72,
-//               child: ReUsable.buildTextButton(
-//                 '목록으로',
-//                 Colors.transparent,
-//                 ColorRev.white,
-//                 onPressed: () {
-//                   Navigator.push(context,
-//                       MaterialPageRoute(builder: (context) => MainWidget()));
-//                 },
-//               ),
-//             ),
-//           ],
-//         );
-//       });
-// }
+dynamic _buildAlert(context) {
+  return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+          title: Center(
+              child: Text(
+                '시험 결과',
+                style: TextStyle(
+                  color: textPrimaryColor,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              )),
+          contentPadding: EdgeInsets.fromLTRB(24, 12, 24, 0),
+          content: Container(
+            height: 100,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(32)),
+              elevation: 0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '${Questions.questionResult['totalCount']}개의 문제 중',
+                    style:
+                    TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '${Questions.questionResult['correctCount']}개를 맞췄습니다 !',
+                    style:
+                    TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          elevation: 7,
+          backgroundColor: primaryColor,
+          actionsPadding: EdgeInsets.symmetric(horizontal: 64),
+          actionsOverflowButtonSpacing: 100,
+          actions: [
+            SizedBox(
+              width: 72,
+              child: buildTextButton(context, Text('상세 보기'), () {}),
+
+            ),
+            SizedBox(
+              width: 72,
+              child: buildTextButton(context, Text('목록으로'), () {Navigator.popUntil(context, (route) => false);/*메인으로 돌아가기*/})),
+
+          ],
+        );
+      });
+}
 }
 
 Server server = Server();

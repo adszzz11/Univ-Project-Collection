@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new/constraints.dart';
+import 'package:flutter_new/server.dart';
 
 class SelectQuestion extends StatelessWidget {
   TextEditingController _startController;
@@ -54,7 +55,12 @@ class SelectQuestion extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: buildTextButton(context, Text('문제 풀기'), () {}),
+                      child: buildTextButton(context, Text('문제 풀기'), () {
+                        server.getReq('getQuestionByRange',
+                            start: int.parse(_startController.text),
+                            end: int.parse(_endController.text),
+                            context: context);
+                      }),
                     )
                   ],
                 ),
