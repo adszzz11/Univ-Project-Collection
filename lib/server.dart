@@ -88,9 +88,11 @@ class Server {
         addr = 'auth/updatePw';
         data = {"userId": userId, "newPassword": password};
         break;
+
 //---------------------------------------------------------------------------------------------
 //    Board Part
 //---------------------------------------------------------------------------------------------
+
       case 'getPinedBoard':
         reqType = 'get';
         addr = 'board/notice-pined';
@@ -122,7 +124,7 @@ class Server {
 
       // case 'submit':
       //   reqType = 'post';
-      //   addr = 'problem/submit';
+      //   addr = 'study/submit';
       //   var options =
       //   BaseOptions(headers: {'Authorization': 'Bearer ${Secret.token}'});
       //   submitList.clear();
@@ -140,7 +142,7 @@ class Server {
       //   break;
       // case 'getQuestionByRange':
       //   reqType = 'get';
-      //   addr = 'problem/rangeQuestions';
+      //   addr = 'study/rangeQuestions';
       //   queryParameters = {
       //     'start': start,
       //     'end': end,
@@ -148,17 +150,17 @@ class Server {
       //   break;
       // case 'getResults':
       //   reqType = 'get';
-      //   addr = 'problem/answer/summary';
+      //   addr = 'study/answer/summary';
       //   queryParameters = {'id': Secret.getSub, 'page': 0};
       //   break;
       // case 'getResults2':
       //   reqType = 'get';
-      //   addr = 'problem/answer/summary';
+      //   addr = 'study/answer/summary';
       //   queryParameters = {'id': Secret.getSub, 'page': page};
       //   break;
       // case 'getResultQuestions':
       //   reqType = 'get';
-      //   addr = 'problem/answer/detail';
+      //   addr = 'study/answer/detail';
       //   queryParameters = {'id': answerMainId};
       //   break;
 
@@ -168,8 +170,7 @@ class Server {
         await _Req(reqType, addr, queryParameters: queryParameters, data: data);
     print(response.data);
 
-
-
+    
     switch (type) {
 
 //---------------------------------------------------------------------------------------------

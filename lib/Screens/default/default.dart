@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_new/Screens/default/study.dart';
 import 'package:flutter_new/Screens/default/profile.dart';
+import 'package:flutter_new/Screens/default/study/study_widget.dart';
 import 'package:flutter_new/constraints.dart';
 
 import 'home/home_widget.dart';
@@ -39,7 +39,7 @@ class _DefaultPageState extends State<DefaultPage> {
       children: [
         DefaultProfile(),
         Home(),
-        DefaultProblem()
+        Study()
       ],
     );
   }

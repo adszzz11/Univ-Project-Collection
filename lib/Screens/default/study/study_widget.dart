@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_new/Screens/default/problem/select.dart';
+import 'package:flutter_new/Screens/default/study/select.dart';
 
-import '../../constraints.dart';
+import '../../../constraints.dart';
 
-class DefaultProblem extends StatelessWidget {
+class Study extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
