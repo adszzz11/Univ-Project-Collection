@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new/Screens/auth/auth_login.dart';
+import 'package:flutter_new/Screens/default/default.dart';
 import 'package:flutter_new/repo/boards.dart';
 import 'package:flutter_new/repo/problems.dart';
 import 'package:flutter_new/themes.dart';
@@ -30,11 +31,18 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => BoardProvider()),
-        ChangeNotifierProvider(create: (_) => QuestionProvider(),),
+        ChangeNotifierProvider(
+          create: (_) => QuestionProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: AuthLogin(),
+        initialRoute: '/auth',
+        routes: {
+          '/auth': (context) =>AuthLogin(),
+          '/': (context) => DefaultPage(),
+        },
+        // home: AuthLogin(),
         title: 'OnePass Login Page',
         theme: CustomTheme.lightTheme,
         darkTheme: CustomTheme.darkTheme,

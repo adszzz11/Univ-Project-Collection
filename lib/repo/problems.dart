@@ -59,9 +59,14 @@ class Results {
   static var _resultQuestions=[];
   static get resultQuestion=>_resultQuestions;
   //TODO 객체 메소드 안에 넣을 수 있을거같은데?
+  static bool isEmptySummary() {
+    if(_resultSummary.isEmpty) return true;
+    return false;
+  }
   static void initResultSummary(var value) {
     _resultSummary = value;
     print(_resultSummary);
+    print('ResultSummary init clear');
   }
   static void initResultQuestions(var value) {
     _resultQuestions = value;

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new/Screens/default/study/select.dart';
+import 'package:flutter_new/Screens/default/study/study_result.dart';
 
 import '../../../constraints.dart';
+import '../../../server.dart';
 
 class Study extends StatelessWidget {
   @override
@@ -99,7 +101,10 @@ class Study extends StatelessWidget {
                   style:
                       TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
               () {
-                // server.getReqToQuery(context, 'getResults');
+                server.getReq('getResults', page: 0);
+                Future.delayed(Duration(seconds: 1), () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ShowResult()));
+                });
               },
             ),
           ),
