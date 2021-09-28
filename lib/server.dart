@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_new/Screens/auth/auth_changepw.dart';
 import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/main.dart';
+import 'package:flutter_new/repo/ask.dart';
 import 'package:flutter_new/repo/boards.dart';
 import 'package:flutter_new/repo/problems.dart';
 import 'package:flutter_new/secret.dart';
@@ -167,6 +168,14 @@ class Server {
       addr = 'problem/answer/detail';
       queryParameters = {'id': answerMainId};
       break;
+//---------------------------------------------------------------------------------------------
+//    Ask Part
+//---------------------------------------------------------------------------------------------
+      case 'getAskList':
+        reqType='get';
+        addr='board/ask';
+        queryParameters={'page': page};
+        break;
 
     }
 
@@ -290,6 +299,14 @@ class Server {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => ResultDetail()));
       break;
+//---------------------------------------------------------------------------------------------
+//    Ask Part
+//---------------------------------------------------------------------------------------------
+      case 'getAskList':
+        if(Ask.isAskListEmpty())
+          Ask.initAskList(response.data);
+        return response.data;
+        break;
     }
   }
 

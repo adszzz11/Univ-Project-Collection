@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_new/Screens/default/home/ask/ask_show.dart';
 import 'package:flutter_new/Screens/default/home/notice/notice_show.dart';
 import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/repo/boards.dart';
@@ -275,7 +276,10 @@ class _HomeState extends State<Home> {
               elevation: 7,
               child: TextButton(
                 onPressed: () {
-                  // server.getReqToQuery(context, 'getAskList',page: 0);
+                  server.getReq('getAskList',page: 0, context: context);
+                  Future.delayed(Duration(seconds: 1), () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ShowAsk()));
+                  });
                 },
                 child: Row(
                   children: [
