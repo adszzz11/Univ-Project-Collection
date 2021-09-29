@@ -127,6 +127,7 @@ class _ShowAskState extends State<ShowAsk> {
                   ),
                 ],
               ),
+              buildPrimaryTextOnlyButton(context, Icon(Icons.arrow_forward_ios), () {}),
               // TextButton(
               //   child: Icon(Icons.arrow_forward_ios),
               //   onPressed: () {

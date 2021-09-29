@@ -4,6 +4,7 @@ class Ask {
   static void initAskList(var value) {
     _askList=value;
     print('AskList init complete!');
+    print('AskList length ${_askList.length}');
   }
   static bool isAskListEmpty() {
     return _askList.isEmpty;

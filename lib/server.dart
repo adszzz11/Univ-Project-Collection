@@ -304,8 +304,8 @@ class Server {
 //---------------------------------------------------------------------------------------------
       case 'getAskList':
         if(Ask.isAskListEmpty())
-          Ask.initAskList(response.data);
-        return response.data;
+          Ask.initAskList(response.data['asks']['content']);
+        return response.data['asks']['content'];
         break;
     }
   }
