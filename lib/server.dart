@@ -34,7 +34,7 @@ class Server {
         page,
         answerMainId,
         isPined,
-        boardNum}) async {
+        boardNum, askNum}) async {
     String addr, reqType;
     Map<String, dynamic> data;
     List<Map<String, dynamic>> submitList = [];
@@ -176,6 +176,9 @@ class Server {
         addr='board/ask';
         queryParameters={'page': page};
         break;
+      case 'getAskDetail':
+        reqType='get';
+        addr='board/ask/$askNum';
 
     }
 
@@ -306,6 +309,8 @@ class Server {
         if(Ask.isAskListEmpty())
           Ask.initAskList(response.data['asks']['content']);
         return response.data['asks']['content'];
+        break;
+      case 'getAskDetail':
         break;
     }
   }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new/repo/ask.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../constraints.dart';
 import '../../../../server.dart';
+import 'ask_detail.dart';
 
 class ShowAsk extends StatefulWidget {
   @override
@@ -76,74 +78,86 @@ class _ShowAskState extends State<ShowAsk> {
   }
 
   Widget _buildAskList(int index) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return Consumer<AskProvider>(
+      builder: (context, provider, child) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  Column(
                     children: [
-                      SizedBox(
-                        width: 200,
-                        child: Text(
-                          Ask.askList[index]['title'].toString(),
-                          // maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.bold),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SizedBox(
+                            width: 200,
+                            child: Text(
+                              Ask.askList[index]['title'].toString(),
+                              // maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 28,
+                          ),
+                          Text(
+                            '${Ask.askList[index]['hits'].toString()} hits',
+                            style: TextStyle(
+                                fontSize: 10, fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                        width: 28,
-                      ),
-                      Text(
-                        '${Ask.askList[index]['hits'].toString()} hits',
-                        style: TextStyle(
-                            fontSize: 10, fontWeight: FontWeight.bold),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            Ask.askList[index]['postDate'].toString(),
+                            style: TextStyle(fontSize: 10),
+                          ),
+                          SizedBox(
+                            width: 55,
+                          ),
+                          Text(
+                            Ask.askList[index]['nickname'],
+                            style: TextStyle(fontSize: 10),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        Ask.askList[index]['postDate'].toString(),
-                        style: TextStyle(fontSize: 10),
-                      ),
-                      SizedBox(
-                        width: 55,
-                      ),
-                      Text(
-                        Ask.askList[index]['nickname'],
-                        style: TextStyle(fontSize: 10),
-                      ),
-                    ],
-                  ),
+                  buildPrimaryTextOnlyButton(context, Icon(Icons.arrow_forward_ios),
+                          () {
+                        provider.updatePage(index);
+                        server.getReq('getBoardDetail',
+                            boardNum: index, isPined: false, context: context);
+                        Future.delayed(Duration(seconds: 1),() {
+                          return Navigator.push(context,MaterialPageRoute(builder: (context)=>AskDetail()));
+                        });
+                      }),
+                  // TextButton(
+                  //   child: Icon(Icons.arrow_forward_ios),
+                  //   onPressed: () {
+                  //     // server.getReq('getAskComment', askNum: index, page: 0);
+                  //   },
+                  //   style: ColorRev.buttonStyle3,
+                  // ),
                 ],
               ),
-              buildPrimaryTextOnlyButton(context, Icon(Icons.arrow_forward_ios), () {}),
-              // TextButton(
-              //   child: Icon(Icons.arrow_forward_ios),
-              //   onPressed: () {
-              //     // server.getReq('getAskComment', askNum: index, page: 0);
-              //   },
-              //   style: ColorRev.buttonStyle3,
-              // ),
+              Divider(
+                height: 8,
+                thickness: 1,
+                color: Colors.grey,
+              ),
             ],
           ),
-          Divider(
-            height: 8,
-            thickness: 1,
-            color: Colors.grey,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
