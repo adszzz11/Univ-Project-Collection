@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 
 class Ask {
@@ -11,14 +13,15 @@ class Ask {
   static bool isAskListEmpty() {
     return _askList.isEmpty;
   }
-  static dynamic _askComment=[];
+
+  static HashMap<int, dynamic> _askComment=HashMap();
   static get askComment=>_askComment;
-  static void initAskComment(var value) {
-    _askComment=value;
+  static void initAskComment(var value, int askId) {
+    _askComment.addAll({askId : value});
     print('AskComment init complete!');
   }
-  static bool isAskCommentEmpty() {
-    return _askComment.isEmpty;
+  static bool isAskCommentEmpty(int askId) {
+    return _askComment[askId].isEmpty;
   }
 }
 

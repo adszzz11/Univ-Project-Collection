@@ -34,7 +34,7 @@ class Server {
         page,
         answerMainId,
         isPined,
-        boardNum, askNum}) async {
+        boardNum, askNum, askId}) async {
     String addr, reqType;
     Map<String, dynamic> data;
     List<Map<String, dynamic>> submitList = [];
@@ -176,10 +176,18 @@ class Server {
         addr='board/ask';
         queryParameters={'page': page};
         break;
+
       case 'getAskDetail':
         reqType='get';
         addr='board/ask/$askNum';
+        break;
 
+      case 'getAskComment':
+        reqType='get';
+        addr='board/comment';
+        queryParameters={'askId': askId,
+        'page':page};
+        break;
     }
 
     Response response = await _Req(reqType, addr,
@@ -311,6 +319,12 @@ class Server {
         return response.data['asks']['content'];
         break;
       case 'getAskDetail':
+        break;
+
+      case 'getAskComment':
+        if(Ask.isAskCommentEmpty(askId))
+          Ask.initAskComment(response.data, askId);
+        return response.data;
         break;
     }
   }
