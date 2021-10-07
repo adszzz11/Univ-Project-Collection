@@ -34,7 +34,7 @@ class Server {
         page,
         answerMainId,
         isPined,
-        boardNum, askNum, askId}) async {
+        boardNum, askNum, askId, askComment, refAsk}) async {
     String addr, reqType;
     Map<String, dynamic> data;
     List<Map<String, dynamic>> submitList = [];
@@ -188,6 +188,11 @@ class Server {
         queryParameters={'askId': askId,
         'page':page};
         break;
+      case 'addAskComment':
+        reqType='post';
+        addr='board/comment';
+        data={'userId': Secret.getSub, 'nickname': '닉네임', 'comment': askComment, 'refAsk': refAsk};
+        break;
     }
 
     Response response = await _Req(reqType, addr,
@@ -325,6 +330,8 @@ class Server {
         if(Ask.isAskCommentEmpty(askId))
           Ask.initAskComment(response.data, askId);
         return response.data;
+        break;
+      case 'addAskComment':
         break;
     }
   }

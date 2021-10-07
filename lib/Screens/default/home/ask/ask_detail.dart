@@ -11,9 +11,10 @@ class AskDetail extends StatefulWidget {
 }
 
 class _AskDetailState extends State<AskDetail> {
-   ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = new ScrollController();
   bool isPerformingRequest = false;
   int currentPage = 1;
+  int askId = -1;
 
   @override
   void dispose() {
@@ -48,7 +49,7 @@ class _AskDetailState extends State<AskDetail> {
         }
       }
       setState(() {
-        Ask.askComment.addAll(newEntries);
+        Ask.askComment[askId].addAll(newEntries);
         currentPage++;
         isPerformingRequest = false;
       });
@@ -58,7 +59,7 @@ class _AskDetailState extends State<AskDetail> {
   /// from - inclusive, to - exclusive
   Future<dynamic> req() async {
     return Future.delayed(Duration(seconds: 2), () {
-      // return server.getReq('getaskComment[provider.askNum',page: currentPage);
+      return server.getReq('getAskComment', askId: askId, page: currentPage);
     });
   }
 
@@ -79,91 +80,74 @@ class _AskDetailState extends State<AskDetail> {
   Widget _buildAskComment(int index) {
     return Consumer<AskProvider>(
       builder: (context, provider, child) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                            width: 200,
-                            child: Text(
-                              Ask.askComment[provider.askNum][index]['title'].toString(),
-                              // maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 28,
-                          ),
-                          Text(
-                            '${Ask.askComment[provider.askNum][index]['hits'].toString()} hits',
-                            style: TextStyle(
-                                fontSize: 10, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+        return Card(
+          elevation: 7,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                      width: 200,
+                      child: Text(
+                        Ask.askComment[Ask.askList[provider.askNum]['askId']]
+                                [index]['nickname']
+                            .toString(),
+                        // maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text(
-                            Ask.askComment[provider.askNum][index]['postDate'].toString(),
-                            style: TextStyle(fontSize: 10),
-                          ),
-                          SizedBox(
-                            width: 55,
-                          ),
-                          Text(
-                            Ask.askComment[provider.askNum][index]['nickname'],
-                            style: TextStyle(fontSize: 10),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
+                    SizedBox(
+                      width: 28,
+                    ),
+                    Text(
+                      '${Ask.askComment[Ask.askList[provider.askNum]['askId']][index]['postDate'].toString()}',
+                      style:
+                          TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Text(
+                    Ask.askComment[Ask.askList[provider.askNum]['askId']][index]
+                            ['comment']
+                        .toString(),
+                    style: TextStyle(fontSize: 12),
                   ),
-                  buildPrimaryTextOnlyButton(context, Icon(Icons.arrow_forward_ios),
-                          () {
-                        provider.updatePage(index);
-                        // server.getReq('getBoardDetail',
-                        //     boardNum: index, isPined: false, context: context);
-                        // Future.delayed(Duration(seconds: 1),() {
-                        //   return Navigator.push(context,MaterialPageRoute(builder: (context)=>AskDetail()));
-                        // });
-                      }),
-                ],
-              ),
-              Divider(
-                height: 8,
-                thickness: 1,
-                color: Colors.grey,
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
+    TextEditingController _commentController = TextEditingController();
+    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
     return Consumer<AskProvider>(
       builder: (context, provider, child) {
+        askId = Ask.askList[provider.askNum]['askId'];
         return Scaffold(
-          resizeToAvoidBottomInset: false,
+          // resizeToAvoidBottomInset: false,
           backgroundColor: primaryColor,
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ListView(
+              // mainAxisAlignment: MainAxisAlignment.end,
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              physics: BouncingScrollPhysics(),
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -171,7 +155,7 @@ class _AskDetailState extends State<AskDetail> {
                     Container(
                       width: MediaQuery.of(context).size.width * 0.7,
                       child: Text(
-                        Ask.askComment[provider.askNum][provider.askNum]['nickname'].toString(),
+                        Ask.askList[provider.askNum]['title'].toString(),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 3,
                         style: TextStyle(
@@ -181,7 +165,7 @@ class _AskDetailState extends State<AskDetail> {
                       ),
                     ),
                     Text(
-                        Ask.askComment[provider.askNum][provider.askNum]['poasDate'].toString(),
+                      Ask.askList[provider.askNum]['nickname'].toString(),
                       style: TextStyle(
                           fontSize: 12,
                           color: Colors.white,
@@ -193,19 +177,19 @@ class _AskDetailState extends State<AskDetail> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      Ask.askComment[provider.askNum][provider.askNum]['comment'].toString(),
+                      Ask.askList[provider.askNum]['postDate'].toString(),
                       style: TextStyle(
                           fontSize: 12,
                           color: Colors.white,
                           fontWeight: FontWeight.bold),
                     ),
-                    // Text(
-                    //   Ask.askComment[provider.askNum[provider.askNum]['hits'].toString(),
-                    //   style: TextStyle(
-                    //       fontSize: 12,
-                    //       color: Colors.white,
-                    //       fontWeight: FontWeight.bold),
-                    // ),
+                    Text(
+                      '${Ask.askList[provider.askNum]['hits'].toString()} hits',
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ],
                 ),
                 Container(
@@ -217,11 +201,26 @@ class _AskDetailState extends State<AskDetail> {
                     elevation: 7,
                     child: Column(
                       children: [
-                        Padding(
+                        Container(
                           padding: const EdgeInsets.all(16.0),
+                          height: MediaQuery.of(context).size.height * 0.23,
                           child: Text(
-                            Ask.askComment[provider.askNum][provider.askNum]['content'].toString(),
+                            Ask.askList[provider.askNum]['content'].toString(),
                           ),
+                        ),
+                        Container(
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.symmetric(horizontal: 32),
+                          child: buildTextButton(
+                              context,
+                              Text(
+                                  '${Ask.askList[provider.askNum]['recommend'].toString()} ❤'),
+                              () {
+                            setState(() {
+                              Ask.askList[provider.askNum]['recommend']++;
+                              //recommend 추가하는 로직 구성 요망
+                            });
+                          }),
                         ),
                       ],
                     ),
@@ -229,54 +228,54 @@ class _AskDetailState extends State<AskDetail> {
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.48,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(32),),
-                    // elevation: 7,
-                    shadowColor: Colors.transparent,
-
-                    color: Colors.transparent,
-                    child: Column(
-                      children: [
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          padding: EdgeInsets.symmetric(horizontal: 36, vertical: 0),
-                          child: Text(
-                            '댓  글',
-                            style: TextStyle(
-                                fontSize: 24,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
+                  child: Column(
+                    children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 36, vertical: 0),
+                        child: Text(
+                          '댓  글',
+                          style: TextStyle(
+                              fontSize: 24,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
                         ),
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.79,
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: ListView.builder(
-                            controller: _scrollController,
-                            itemCount: Ask.askComment[provider.askNum].length + 1,
-                            itemBuilder: (context, index) {
-                              int itemCount = Ask.askComment[provider.askNum].length;
-                              if (index == Ask.askComment[provider.askNum].length)
-                                return _buildProgressIndicator();
-                              if (itemCount > 0) return _buildAskComment(index);
-                              return Center(
-                                child: Text(
-                                  '댓글이 없습니다.',
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              );
-                            },
-                          ),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.4,
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount: Ask
+                                  .askComment[Ask.askList[provider.askNum]
+                                      ['askId']]
+                                  .length +
+                              1,
+                          itemBuilder: (context, index) {
+                            int itemCount = Ask
+                                .askComment[Ask.askList[provider.askNum]
+                                    ['askId']]
+                                .length;
+                            if (index ==
+                                Ask
+                                    .askComment[Ask.askList[provider.askNum]
+                                        ['askId']]
+                                    .length) return _buildProgressIndicator();
+                            if (itemCount > 0) return _buildAskComment(index);
+                            return Center(
+                              child: Text(
+                                '댓글이 없습니다.',
+                                style: TextStyle(
+                                    fontSize: 24,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            );
+                          },
                         ),
-
-
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
                 Container(
@@ -286,12 +285,12 @@ class _AskDetailState extends State<AskDetail> {
                       buildSecondaryTextOnlyButton(
                         context,
                         Text('이전'),
-                            () {
+                        () {
                           if (provider.askNum - 1 >= 0) {
-                            // server.getReq('getAskDetail',
-                            //     askNum: provider.askNum - 1,
-                            //     context: context);
-
+                            server.getReq('getAskComment',
+                                askId: Ask.askList[provider.askNum - 1]
+                                    ['askId'],
+                                page: 0);
                             Future.delayed(Duration(seconds: 1), () {
                               return provider.previousPage();
                             });
@@ -301,18 +300,19 @@ class _AskDetailState extends State<AskDetail> {
                       buildSecondaryTextOnlyButton(
                         context,
                         Text('목록'),
-                            () {
+                        () {
                           Navigator.pop(context);
                         },
                       ),
                       buildSecondaryTextOnlyButton(
                         context,
                         Text('다음'),
-                            () {
+                        () {
                           if (provider.askNum + 1 < provider.maxPage) {
-                            // server.getReq('getAskDetail',
-                            //     askNum: provider.askNum + 1,
-                            //     context: context);
+                            server.getReq('getAskComment',
+                                askId: Ask.askList[provider.askNum + 1]
+                                    ['askId'],
+                                page: 0);
                             Future.delayed(Duration(seconds: 1), () {
                               return provider.nextPage();
                             });
@@ -321,7 +321,28 @@ class _AskDetailState extends State<AskDetail> {
                       ),
                     ],
                   ),
-                )
+                ),
+                Container(
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        padding: EdgeInsets.symmetric(horizontal: 8),
+                        child: Form(
+                          key: _formKey,
+                          child: buildTextFormField(
+                              context, _commentController, null, '댓글을 입력하세요', validator: primaryValidator),
+                        ),
+                      ),
+                      buildTextButton(context, Text('제출'), () {
+                        server.getReq('addAskComment',
+                            askComment: _commentController.text,
+                            refAsk: Ask.askList[provider.askNum + 1]['askId']);
+                      })
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

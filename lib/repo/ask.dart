@@ -16,13 +16,25 @@ class Ask {
 
   static HashMap<int, dynamic> _askComment=HashMap();
   static get askComment=>_askComment;
+
   static void initAskComment(var value, int askId) {
-    _askComment.addAll({askId : value});
+    Set<dynamic> temp=_askComment[askId]?.toSet();
+    if(_askComment.containsKey(askId)) {
+      temp.add(value);
+      _askComment[askId]=temp.toList();
+    }
+    else
+      _askComment.addAll({askId : value});
+
+
+    print(_askComment);
     print('AskComment init complete!');
   }
   static bool isAskCommentEmpty(int askId) {
-    return _askComment[askId].isEmpty;
+    if (_askComment.containsKey(askId)) return false;
+    return true;
   }
+
 }
 
 class AskProvider extends ChangeNotifier {

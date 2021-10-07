@@ -134,9 +134,10 @@ class _ShowAskState extends State<ShowAsk> {
                   buildPrimaryTextOnlyButton(context, Icon(Icons.arrow_forward_ios),
                           () {
                         provider.updatePage(index);
-                        server.getReq('getBoardDetail',
-                            boardNum: index, isPined: false, context: context);
-                        Future.delayed(Duration(seconds: 1),() {
+                        // server.getReq('getBoardDetail',
+                        //     boardNum: index, isPined: false, context: context);
+                        server.getReq('getAskComment',askId: Ask.askList[index]['askId'], page: 0);
+                        Future.delayed(Duration(seconds: 2),() {
                           return Navigator.push(context,MaterialPageRoute(builder: (context)=>AskDetail()));
                         });
                       }),
