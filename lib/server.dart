@@ -371,6 +371,7 @@ class Server {
       case 'getAskComment':
         if (Ask.isAskCommentEmpty(askId))
           Ask.initAskComment(response.data, askId);
+        function();
         return response.data;
         break;
       case 'addAskComment':
@@ -379,7 +380,8 @@ class Server {
           print('OK');
         }
         break;
-      case 'removeAskComment':
+
+        case 'removeAskComment':
         if (response.data == 'OK') {
           //댓글질 잘 했다고 보내
           print('OK');

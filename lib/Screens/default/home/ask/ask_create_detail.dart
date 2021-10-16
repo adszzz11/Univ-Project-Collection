@@ -32,14 +32,8 @@ class CreateAskDetail extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.1,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.1,
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     child: Card(
                         shape: RoundedRectangleBorder(
@@ -61,14 +55,8 @@ class CreateAskDetail extends StatelessWidget {
                         )),
                   ),
                   Container(
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width,
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height * 0.6,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.6,
                     padding: EdgeInsets.symmetric(horizontal: 8),
                     child: Card(
                         shape: RoundedRectangleBorder(
@@ -96,8 +84,8 @@ class CreateAskDetail extends StatelessWidget {
                         Navigator.pop(context);
                       }),
                       buildTextButton(context, Text('제출'), () {
-                        server.getReq(
-                            'createNewAsk', title: _titleController.text,
+                        server.getReq('createNewAsk',
+                            title: _titleController.text,
                             content: _contentController.text,
                             context: context);
                       }),

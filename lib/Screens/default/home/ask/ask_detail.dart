@@ -13,6 +13,7 @@ class AskDetail extends StatefulWidget {
 
 class _AskDetailState extends State<AskDetail> {
   ScrollController _scrollController = new ScrollController();
+  ScrollController _contentScrollController=ScrollController();
   final keyRefresh = GlobalKey<RefreshIndicatorState>();
   bool isPerformingRequest = false;
   int currentPage = 0;
@@ -27,7 +28,7 @@ class _AskDetailState extends State<AskDetail> {
   @override
   void initState() {
     super.initState();
-    getInitData();
+    // getInitData();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
@@ -36,13 +37,13 @@ class _AskDetailState extends State<AskDetail> {
     });
   }
 
-  Future getInitData() async {
-    Future.delayed(Duration(seconds: 2), () {
-      server.getReq('getAskComment',
-          askId: Ask.askList[context.read<AskProvider>().askNum]['askId'],
-          page: 0);
-    });
-  }
+  // Future getInitData() async {
+  //   Future.delayed(Duration(seconds: 2), () {
+  //     server.getReq('getAskComment',
+  //         askId: Ask.askList[context.read<AskProvider>().askNum]['askId'],
+  //         page: 0);
+  //   });
+  // }
 
   _getMoreData() async {
     if (!isPerformingRequest) {
@@ -70,7 +71,7 @@ class _AskDetailState extends State<AskDetail> {
   Future refresh() async {
     // keyRefresh.currentState.show();
     if (!isPerformingRequest) {
-      isPerformingRequest=true;
+      isPerformingRequest = true;
       // setState(() => isPerformingRequest = true);
       currentPage = 0;
       List<dynamic> newEntries = await req();
@@ -87,7 +88,8 @@ class _AskDetailState extends State<AskDetail> {
   /// from - inclusive, to - exclusive
   Future<dynamic> req() async {
     return Future.delayed(Duration(seconds: 2), () {
-      return server.getReq('getAskComment', askId: askId, page: currentPage);
+      return server.getReq('getAskComment',
+          askId: askId, page: currentPage, function: () {});
     });
   }
 
@@ -163,13 +165,14 @@ class _AskDetailState extends State<AskDetail> {
                                   Secret.getSub
                               ? buildPrimaryTextOnlyButton(
                                   context, Icon(Icons.close), () {
-                                    server.getReq('removeAskComment',
-                                        refAsk: Ask.askComment[
-                                            Ask.askList[provider.askNum]
-                                                ['askId']][index]['refAsk'],
-                                        commentId: Ask.askComment[
-                                            Ask.askList[provider.askNum]
-                                                ['askId']][index]['commentId'], function: refresh());
+                                  server.getReq('removeAskComment',
+                                      refAsk: Ask.askComment[
+                                          Ask.askList[provider.askNum]
+                                              ['askId']][index]['refAsk'],
+                                      commentId: Ask.askComment[
+                                          Ask.askList[provider.askNum]
+                                              ['askId']][index]['commentId'],
+                                      function: refresh());
                                   // refresh();
                                 })
                               : null,
@@ -259,9 +262,20 @@ class _AskDetailState extends State<AskDetail> {
                       children: [
                         Container(
                           padding: const EdgeInsets.all(16.0),
+                          width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height * 0.23,
-                          child: Text(
-                            Ask.askList[provider.askNum]['content'].toString(),
+                          child: Scrollbar(
+                            controller: _contentScrollController,
+                            // thickness: 10,
+                            child: ListView(
+                              controller: _contentScrollController,
+                              children: [
+                                Text(
+                                  Ask.askList[provider.askNum]['content']
+                                      .toString(),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Container(
@@ -363,10 +377,12 @@ class _AskDetailState extends State<AskDetail> {
                             server.getReq('getAskComment',
                                 askId: Ask.askList[provider.askNum - 1]
                                     ['askId'],
-                                page: 0);
-                            Future.delayed(Duration(seconds: 1), () {
-                              return provider.previousPage();
-                            });
+                                page: 0,
+                                function: provider.previousPage);
+
+                            // Future.delayed(Duration(seconds: 1), () {
+                            //   return provider.previousPage();
+                            // });
                           }
                         },
                       ),
@@ -385,10 +401,11 @@ class _AskDetailState extends State<AskDetail> {
                             server.getReq('getAskComment',
                                 askId: Ask.askList[provider.askNum + 1]
                                     ['askId'],
-                                page: 0);
-                            Future.delayed(Duration(seconds: 1), () {
-                              return provider.nextPage();
-                            });
+                                page: 0,
+                                function: provider.nextPage);
+                            // Future.delayed(Duration(seconds: 1), () {
+                            //   return provider.nextPage();
+                            // });
                           }
                         },
                       ),
