@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_new/server.dart';
 
 class Ask {
   static dynamic _askList=[];
@@ -12,6 +13,10 @@ class Ask {
   }
   static bool isAskListEmpty() {
     return _askList.isEmpty;
+  }
+  static void refreshAskList() {
+    _askList.clear();
+    server.getReq('getAskList', page: 0);
   }
 
   static HashMap<int, dynamic> _askComment=HashMap();
@@ -30,6 +35,12 @@ class Ask {
     print(_askComment);
     print('AskComment init complete!');
   }
+
+  static Future refreshComment(int askId) async {
+    _askComment[askId].clear();
+    server.getReq('getAskComment', askId: askId, page: 0);
+  }
+
   static bool isAskCommentEmpty(int askId) {
     if (_askComment.containsKey(askId)) return false;
     return true;
