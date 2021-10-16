@@ -276,10 +276,11 @@ class _HomeState extends State<Home> {
               elevation: 7,
               child: TextButton(
                 onPressed: () {
-                  server.getReq('getAskList',page: 0, context: context);
-                  Future.delayed(Duration(seconds: 1), () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ShowAsk()));
-                  });
+                  server.getReq('gotoAskList',page: 0, context: context);
+
+                  // Future.delayed(Duration(seconds: 1), () {
+                  //   Navigator.push(context, MaterialPageRoute(builder: (context)=>ShowAsk()));
+                  // });
                 },
                 child: Row(
                   children: [
