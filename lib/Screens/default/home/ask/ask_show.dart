@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_new/Screens/default/home/ask/ask_create_detail.dart';
 import 'package:flutter_new/repo/ask.dart';
 import 'package:provider/provider.dart';
 
@@ -173,12 +174,18 @@ class _ShowAskState extends State<ShowAsk> {
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: 36, vertical: 0),
-            child: Text(
-              '질문게시판',
-              style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '질문게시판',
+                  style: TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                ),
+                buildSecondaryTextOnlyButton(context, Icon(Icons.add), () {Navigator.push(context, MaterialPageRoute(builder: (context) =>CreateAskDetail()));})
+              ],
             ),
           ),
           // TextButton(onPressed: () {server.getReq('getPinedBoard');}, child: Text('hi')),

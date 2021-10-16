@@ -41,7 +41,7 @@ class Server {
       askId,
       askComment,
       refAsk,
-      commentId, function}) async {
+      commentId, function, title, content}) async {
     String addr, reqType;
     Map<String, dynamic> data;
     List<Map<String, dynamic>> submitList = [];
@@ -214,6 +214,16 @@ class Server {
           'userId': Secret.getSub
         };
         break;
+      case 'createNewAsk':
+        reqType='post';
+        addr='board/ask';
+        data={
+          'userId':Secret.getSub,
+          'nickname':Secret.nickname,
+          'title':title,
+          'content':content
+        };
+        break;
     }
 
     Response response = await _Req(reqType, addr,
@@ -375,6 +385,10 @@ class Server {
           print('OK');
           function;
         }
+        break;
+      case 'createNewAsk':
+        print('성공');
+        Navigator.pop(context);
         break;
     }
   }
