@@ -6,16 +6,21 @@ class Secret {
   static String _HACKERS = "http://192.168.0.201:8760/";
 
   static String get path => _REV_AUTH;
-  static var jwt;
-  static String _token = "";
 
+  static var jwt;
+
+  static String _token = "";
   static String get token => _token;
 
-  static void setToken(String token) {
+  static String _nickname="";
+  static get nickname =>_nickname;
+
+  static void setToken(String token, String nickname) {
     _token = token;
     jwt = Jwt.parseJwt(_token);
     print(jwt);
     print(_token);
+    _nickname=nickname;
   }
 
   static get getExp =>
