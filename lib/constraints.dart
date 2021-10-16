@@ -14,7 +14,6 @@ var primaryValidator = (text) {
   return null;
 };
 
-
 buildTextFormField(context, controller, icon, labelText,
     {keyboardType, inputFormatters, obscureText = false, validator}) {
   return TextFormField(
