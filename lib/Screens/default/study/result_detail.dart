@@ -9,19 +9,19 @@ class ResultDetail extends StatelessWidget {
     List<Widget> result = [];
 
     for (int i = 0;
-    i < Results.resultQuestion[index]['question']['choices'].length;
-    i++) {
+        i < Results.resultQuestion[index]['question']['choices'].length;
+        i++) {
       Color temp = Colors.black;
       if (Results.resultQuestion[index]['question']['choices'][i]
-      ['isCorrect'] ==
+              ['isCorrect'] ==
           true) temp = Colors.red;
       for (int j = 0;
-      j < Results.resultQuestion[index]['choices'].length;
-      j++) {
+          j < Results.resultQuestion[index]['choices'].length;
+          j++) {
         if (Results.resultQuestion[index]['question']['choices'][i]['id'] ==
             Results.resultQuestion[index]['choices'][j]) {
           if (Results.resultQuestion[index]['question']['choices'][i]
-          ['isCorrect'] ==
+                  ['isCorrect'] ==
               true) {
             temp = Colors.blue;
             break;
@@ -45,7 +45,7 @@ class ResultDetail extends StatelessWidget {
     return result;
   }
 
-  Widget _buildResultDetail(int index) {
+  Widget _buildResultDetail(context, int index) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -58,6 +58,54 @@ class ResultDetail extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // ListView.builder(
+                //     itemCount:Results.resultQuestion[index]['keywords'].length,
+                //     itemBuilder: (context, index2) {
+                //   int itemCount = 1;
+                //   if (itemCount > 0) return buildTextButton(context, Text(Results.resultQuestion[index]['keywords'][index2]), () {});
+                //   return Center(
+                //     child: Text(
+                //       '기록이 없습니다.',
+                //       style: TextStyle(
+                //           fontSize: 24,
+                //           color: Colors.grey,
+                //           fontWeight: FontWeight.bold),
+                //     ),
+                //   );
+                // }),
+                Wrap(
+                  children: [
+                    Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      color: primaryColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(Results.resultQuestion[index]['keywords'][0],style: TextStyle(color: Colors.white),),
+                      ),
+                    ),
+
+                    Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      color: primaryColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(Results.resultQuestion[index]['keywords'][1],style: TextStyle(color: Colors.white),),
+                      ),
+                    ),
+
+                    Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      color: primaryColor,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(Results.resultQuestion[index]['keywords'][2],style: TextStyle(color: Colors.white),),
+                      ),
+                    ),
+                  ],
+                ),
                 Text(
                   Results.resultQuestion[index]['question']['exam'].toString(),
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -154,7 +202,7 @@ class ResultDetail extends StatelessWidget {
                 itemCount: Results.resultQuestion.length,
                 itemBuilder: (context, index) {
                   int itemCount = 1;
-                  if (itemCount > 0) return _buildResultDetail(index);
+                  if (itemCount > 0) return _buildResultDetail(context, index);
                   return Center(
                     child: Text(
                       '기록이 없습니다.',
