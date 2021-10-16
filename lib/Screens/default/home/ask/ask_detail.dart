@@ -3,6 +3,7 @@ import 'package:flutter_new/repo/ask.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../constraints.dart';
+import '../../../../secret.dart';
 import '../../../../server.dart';
 
 class AskDetail extends StatefulWidget {
@@ -12,8 +13,9 @@ class AskDetail extends StatefulWidget {
 
 class _AskDetailState extends State<AskDetail> {
   ScrollController _scrollController = new ScrollController();
+  final keyRefresh = GlobalKey<RefreshIndicatorState>();
   bool isPerformingRequest = false;
-  int currentPage = 1;
+  int currentPage = 0;
   int askId = -1;
 
   @override
@@ -25,11 +27,20 @@ class _AskDetailState extends State<AskDetail> {
   @override
   void initState() {
     super.initState();
+    getInitData();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         _getMoreData();
       }
+    });
+  }
+
+  Future getInitData() async {
+    Future.delayed(Duration(seconds: 2), () {
+      server.getReq('getAskComment',
+          askId: Ask.askList[context.read<AskProvider>().askNum]['askId'],
+          page: 0);
     });
   }
 
@@ -51,6 +62,23 @@ class _AskDetailState extends State<AskDetail> {
       setState(() {
         Ask.askComment[askId].addAll(newEntries);
         currentPage++;
+        isPerformingRequest = false;
+      });
+    }
+  }
+
+  Future refresh() async {
+    // keyRefresh.currentState.show();
+    if (!isPerformingRequest) {
+      isPerformingRequest=true;
+      // setState(() => isPerformingRequest = true);
+      currentPage = 0;
+      List<dynamic> newEntries = await req();
+      setState(() {
+        Ask.askComment[askId].clear();
+        Ask.askComment[askId].addAll(newEntries);
+        currentPage++;
+        // Ask.refreshComment(askId);
         isPerformingRequest = false;
       });
     }
@@ -116,11 +144,38 @@ class _AskDetailState extends State<AskDetail> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Text(
-                    Ask.askComment[Ask.askList[provider.askNum]['askId']][index]
-                            ['comment']
-                        .toString(),
-                    style: TextStyle(fontSize: 12),
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.65,
+                          child: Text(
+                            Ask.askComment[Ask.askList[provider.askNum]
+                                    ['askId']][index]['comment']
+                                .toString(),
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                        Container(
+                          child: Ask.askComment[Ask.askList[provider.askNum]
+                                      ['askId']][index]['userId'] ==
+                                  Secret.getSub
+                              ? buildPrimaryTextOnlyButton(
+                                  context, Icon(Icons.close), () {
+                                    server.getReq('removeAskComment',
+                                        refAsk: Ask.askComment[
+                                            Ask.askList[provider.askNum]
+                                                ['askId']][index]['refAsk'],
+                                        commentId: Ask.askComment[
+                                            Ask.askList[provider.askNum]
+                                                ['askId']][index]['commentId'], function: refresh());
+                                  // refresh();
+                                })
+                              : null,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -135,6 +190,7 @@ class _AskDetailState extends State<AskDetail> {
   Widget build(BuildContext context) {
     TextEditingController _commentController = TextEditingController();
     GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final keyRefresh = GlobalKey<RefreshIndicatorState>();
 
     return Consumer<AskProvider>(
       builder: (context, provider, child) {
@@ -233,46 +289,63 @@ class _AskDetailState extends State<AskDetail> {
                       Container(
                         alignment: Alignment.centerLeft,
                         padding:
-                            EdgeInsets.symmetric(horizontal: 36, vertical: 0),
-                        child: Text(
-                          '댓  글',
-                          style: TextStyle(
-                              fontSize: 24,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '댓  글',
+                              style: TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            buildSelectTextButton(
+                                context, Icon(Icons.wifi_protected_setup_sharp),
+                                () {
+                              refresh();
+                            })
+                          ],
                         ),
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height * 0.4,
                         padding: EdgeInsets.symmetric(vertical: 10),
-                        child: ListView.builder(
-                          controller: _scrollController,
-                          itemCount: Ask
-                                  .askComment[Ask.askList[provider.askNum]
-                                      ['askId']]
-                                  .length +
-                              1,
-                          itemBuilder: (context, index) {
-                            int itemCount = Ask
-                                .askComment[Ask.askList[provider.askNum]
-                                    ['askId']]
-                                .length;
-                            if (index ==
-                                Ask
+                        child: RefreshIndicator(
+                          key: keyRefresh,
+                          onRefresh: refresh,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            primary: false,
+                            controller: _scrollController,
+                            itemCount: Ask
                                     .askComment[Ask.askList[provider.askNum]
                                         ['askId']]
-                                    .length) return _buildProgressIndicator();
-                            if (itemCount > 0) return _buildAskComment(index);
-                            return Center(
-                              child: Text(
-                                '댓글이 없습니다.',
-                                style: TextStyle(
-                                    fontSize: 24,
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            );
-                          },
+                                    .length +
+                                1,
+                            itemBuilder: (context, index) {
+                              // keyRefresh.currentState.show();
+                              int itemCount = Ask
+                                  .askComment[Ask.askList[provider.askNum]
+                                      ['askId']]
+                                  .length;
+                              if (index ==
+                                  Ask
+                                      .askComment[Ask.askList[provider.askNum]
+                                          ['askId']]
+                                      .length) return _buildProgressIndicator();
+                              if (itemCount > 0) return _buildAskComment(index);
+                              return Center(
+                                child: Text(
+                                  '댓글이 없습니다.',
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ],
@@ -332,13 +405,15 @@ class _AskDetailState extends State<AskDetail> {
                         child: Form(
                           key: _formKey,
                           child: buildTextFormField(
-                              context, _commentController, null, '댓글을 입력하세요', validator: primaryValidator),
+                              context, _commentController, null, '댓글을 입력하세요',
+                              validator: primaryValidator),
                         ),
                       ),
                       buildTextButton(context, Text('제출'), () {
                         server.getReq('addAskComment',
                             askComment: _commentController.text,
-                            refAsk: Ask.askList[provider.askNum + 1]['askId']);
+                            refAsk: Ask.askList[provider.askNum]['askId']);
+                        refresh();
                       })
                     ],
                   ),
