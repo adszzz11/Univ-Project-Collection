@@ -224,6 +224,11 @@ class Server {
           'content':content
         };
         break;
+      case 'removeAsk':
+        reqType='delete';
+        addr='board/ask';
+        queryParameters={'askId':askId};
+        break;
     }
 
     Response response = await _Req(reqType, addr,
@@ -389,6 +394,10 @@ class Server {
         }
         break;
       case 'createNewAsk':
+        print('성공');
+        Navigator.pop(context);
+        break;
+      case 'removeAsk':
         print('성공');
         Navigator.pop(context);
         break;

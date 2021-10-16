@@ -13,7 +13,7 @@ class AskDetail extends StatefulWidget {
 
 class _AskDetailState extends State<AskDetail> {
   ScrollController _scrollController = new ScrollController();
-  ScrollController _contentScrollController=ScrollController();
+  ScrollController _contentScrollController = ScrollController();
   final keyRefresh = GlobalKey<RefreshIndicatorState>();
   bool isPerformingRequest = false;
   int currentPage = 0;
@@ -279,19 +279,35 @@ class _AskDetailState extends State<AskDetail> {
                           ),
                         ),
                         Container(
-                          alignment: Alignment.centerRight,
-                          padding: EdgeInsets.symmetric(horizontal: 32),
-                          child: buildTextButton(
-                              context,
-                              Text(
-                                  '${Ask.askList[provider.askNum]['recommend'].toString()} ❤'),
-                              () {
-                            setState(() {
-                              Ask.askList[provider.askNum]['recommend']++;
-                              //recommend 추가하는 로직 구성 요망
-                            });
-                          }),
-                        ),
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.symmetric(horizontal: 32),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Ask.askList[provider.askNum]['userId'] ==
+                                        Secret.getSub
+                                    ? buildTextButton(context, Text('글 삭제'),
+                                        () {
+                                        server.getReq('removeAsk',
+                                            askId: Ask.askList[provider.askNum]
+                                                ['askId']);
+                                      })
+                                    : SizedBox(),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                buildTextButton(
+                                    context,
+                                    Text(
+                                        '${Ask.askList[provider.askNum]['recommend'].toString()} ❤'),
+                                    () {
+                                  setState(() {
+                                    Ask.askList[provider.askNum]['recommend']++;
+                                    //recommend 추가하는 로직 구성 요망
+                                  });
+                                }),
+                              ],
+                            )),
                       ],
                     ),
                   ),
