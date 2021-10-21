@@ -32,4 +32,10 @@ class Secret {
       DateTime.fromMillisecondsSinceEpoch(0).add(Duration(seconds: jwt["iat"]));
 
   static bool get getExpired => Jwt.isExpired(_token);
+
+  static dynamic _profileInfo;
+  static get profileInfo => _profileInfo;
+  static initProfileInfo(data) {
+    _profileInfo=data;
+  }
 }

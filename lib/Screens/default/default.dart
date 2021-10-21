@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_new/Screens/default/profile.dart';
+import 'package:flutter_new/Screens/default/profile/profile.dart';
 import 'package:flutter_new/Screens/default/study/study_widget.dart';
 import 'package:flutter_new/constraints.dart';
 
@@ -37,7 +37,7 @@ class _DefaultPageState extends State<DefaultPage> {
       scrollDirection: Axis.horizontal,
       controller: controller,
       children: [
-        DefaultProfile(),
+        Profile(),
         Home(),
         Study()
       ],

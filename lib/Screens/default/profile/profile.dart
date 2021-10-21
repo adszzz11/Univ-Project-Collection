@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_new/constraints.dart';
+import 'package:flutter_new/server.dart';
 
-import '../../secret.dart';
+import '../../../secret.dart';
 
-class DefaultProfile extends StatelessWidget {
+class Profile extends StatelessWidget {
   TextEditingController temp;
 
   @override
@@ -58,7 +59,7 @@ class DefaultProfile extends StatelessWidget {
                 Text('프로필 수정',
                     style:
                         TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                () {print('하이하이');},
+                () {server.getReq('getProfile', context: context);},
               ),
             ),
           ),

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_new/Screens/auth/auth_changepw.dart';
 import 'package:flutter_new/Screens/default/home/ask/ask_show.dart';
+import 'package:flutter_new/Screens/default/profile/profile_edit.dart';
 import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/main.dart';
 import 'package:flutter_new/repo/ask.dart';
@@ -229,6 +230,14 @@ class Server {
         addr='board/ask';
         queryParameters={'askId':askId};
         break;
+//---------------------------------------------------------------------------------------------
+//    Profile Part
+//---------------------------------------------------------------------------------------------
+      case 'getProfile':
+        reqType='get';
+        addr='auth/userInfo';
+        queryParameters={'userId':Secret.getSub};
+        break;
     }
 
     Response response = await _Req(reqType, addr,
@@ -400,6 +409,13 @@ class Server {
       case 'removeAsk':
         print('성공');
         Navigator.pop(context);
+        break;
+//---------------------------------------------------------------------------------------------
+//    Profile Part
+//---------------------------------------------------------------------------------------------
+      case 'getProfile':
+        Secret.initProfileInfo(response.data);
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>ProfileEdit()));
         break;
     }
   }
