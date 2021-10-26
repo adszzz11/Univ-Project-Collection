@@ -76,7 +76,7 @@ class Profile extends StatelessWidget {
                 Text('포인트 조회',
                     style:
                         TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                () {},
+                () {server.getReq('getPointList',context: context);},
               ),
             ),
           ),

@@ -38,4 +38,9 @@ class Secret {
   static initProfileInfo(data) {
     _profileInfo=data;
   }
+  static dynamic _pointInfo;
+  static get pointInfo => _pointInfo;
+  static initPointInfo(data) {
+    _pointInfo=data;
+  }
 }

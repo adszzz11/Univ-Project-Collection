@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_new/Screens/auth/auth_changepw.dart';
 import 'package:flutter_new/Screens/default/home/ask/ask_show.dart';
 import 'package:flutter_new/Screens/default/profile/profile_edit.dart';
+import 'package:flutter_new/Screens/default/profile/profile_pointlist.dart';
 import 'package:flutter_new/constraints.dart';
 import 'package:flutter_new/main.dart';
 import 'package:flutter_new/repo/ask.dart';
@@ -238,6 +239,10 @@ class Server {
         addr='auth/userInfo';
         queryParameters={'userId':Secret.getSub};
         break;
+      case 'getPointList':
+        reqType='get';
+        addr='point/reasonList';
+        break;
     }
 
     Response response = await _Req(reqType, addr,
@@ -416,6 +421,10 @@ class Server {
       case 'getProfile':
         Secret.initProfileInfo(response.data);
         Navigator.push(context, MaterialPageRoute(builder: (context) =>ProfileEdit()));
+        break;
+      case 'getPointList':
+        Secret.initPointInfo(response.data);
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>PointList()));
         break;
     }
   }
