@@ -1,5 +1,5 @@
 # Flutter Renew
-
+졸업으로 인한 프로젝트 중단<br/>
 Flutter mobile Renew 프로젝트. 일시적으로 사용하며, 리팩토링 완료 시 레포지토리 삭제 예정<br/>
 
 <hr>
