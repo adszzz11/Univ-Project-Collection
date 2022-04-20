@@ -2,6 +2,9 @@
 졸업으로 인한 프로젝트 중단<br/>
 Flutter mobile Renew 프로젝트. 일시적으로 사용하며, 리팩토링 완료 시 레포지토리 삭제 예정<br/>
 
+Flutter 공부용 레포지토리와 구현체로 나누어 활용 예정.<br />
+해당 레포지토리는 구현체로 사용
+
 <hr>
 
 프로젝트 전체 구조 : <https://github.com/Team-Rev/MSA-SERVER>
